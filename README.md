@@ -1,45 +1,46 @@
-
 # QuarkDrive 🚀
 
-**Sistema de Armazenamento Otimizado com Deduplicação e Compressão**
+**Optimized Storage System with Deduplication and Compression**
 
-QuarkDrive é uma solução avançada de armazenamento que combina deduplicação inteligente, compressão eficiente e cache híbrido para maximizar a eficiência do espaço em disco e melhorar a performance de acesso aos dados.
+QuarkDrive is an advanced storage solution that combines intelligent deduplication, efficient compression, and hybrid caching to maximize disk space efficiency and improve data access performance.
 
-## ✨ Características Principais
+---
 
-- **🔄 Deduplicação Inteligente**: Elimina arquivos duplicados automaticamente
-- **📦 Compressão Avançada**: Utiliza ZSTD para compressão de alta performance
-- **⚡ Extensões C++**: Módulos otimizados para máxima velocidade
-- **💾 Cache Híbrido**: Sistema de cache RAM + SSD para acesso rápido
-- **🖥️ Interface Gráfica**: GUI intuitiva desenvolvida em PyQt5
-- **📁 Sistema de Arquivos Virtual**: Montagem transparente via FUSE/Dokan
-- **📊 Estatísticas Detalhadas**: Monitoramento em tempo real do desempenho
+## ✨ Key Features
 
-## 🛠️ Instalação
+- 🔄 **Intelligent Deduplication** – Automatically removes duplicate files  
+- 📦 **Advanced Compression** – Uses ZSTD for high-performance compression  
+- ⚡ **C++ Extensions** – Optimized modules for maximum speed  
+- 💾 **Hybrid Cache** – RAM + SSD cache system for fast access  
+- 🖥️ **Graphical Interface** – Intuitive GUI built with PyQt5  
+- 📁 **Virtual File System** – Transparent mounting via FUSE (Linux) or Dokan (Windows)  
+- 📊 **Detailed Statistics** – Real-time performance monitoring  
 
-### Pré-requisitos
+---
 
-- Python 3.8+
-- Windows 10+ ou Linux
-- 4GB RAM (recomendado)
-- 1GB espaço livre em disco
+## 🛠️ Installation
 
-### Instalação Rápida
+### ✅ Prerequisites
+
+- Python 3.8+  
+- Windows 10+ or Linux  
+- 4GB RAM (recommended)  
+- 1GB free disk space  
+
+---
+
+### 🚀 Quick Installation
 
 ```bash
-# Clonar o repositório
+# Clone the repository
 git clone https://github.com/ON00dev/QuarkDrive.git
 cd QuarkDrive
 
-# Instalar dependências
+# Install dependencies
 pip install -r requirements.txt
 
-# Compilar extensões C++ (opcional, mas recomendado)
+# Compile C++ extensions (optional but recommended)
 python compile_extensions.py
 
-# Executar
+# Run the application
 python main.py gui
-```
-
-### Instalação via Executável
-Baixe o executável pré-compilado da seção [**releases**](https://github.com/ON00dev/QuarkDrive/releases) e execute diretamente.
