@@ -22,7 +22,7 @@ QuarkDrive is an advanced storage solution that combines intelligent deduplicati
 
 ## 🛠️ Installation
 
-### ✅ Prerequisites
+### [✓] Prerequisites
 
 - Python 3.8+  
 - Windows 10+ or Linux  
