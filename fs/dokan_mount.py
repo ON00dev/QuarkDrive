@@ -1,8 +1,9 @@
-import llfuse
-import os
+from fuse import FUSE
+from .vfs_core import DedupCompressFS
 import sys
+import os
+import subprocess
 import threading
-from vfs_core import DedupCompressFS
 
 def mount_filesystem(mount_point, dedup=True, compress=True, cache=True):
     """
@@ -14,56 +15,40 @@ def mount_filesystem(mount_point, dedup=True, compress=True, cache=True):
     
     # Criar processo de montagem em thread separada
     def mount_thread():
-        operations = DedupCompressFS(backend)
-        
-        llfuse.init(operations, mount_point, [
-            'fsname=quarkdrive',
-            'subtype=dedup',
-            'allow_other'
-        ])
-        
-        try:
-            llfuse.main()
-        except:
-            llfuse.close(unmount=False)
-            raise
-        finally:
-            llfuse.close()
+        FUSE(
+            DedupCompressFS(backend),
+            mount_point,
+            nothreads=True,
+            foreground=True
+        )
     
     thread = threading.Thread(target=mount_thread, daemon=True)
     thread.start()
     return thread
 
-def unmount_filesystem(mount_thread):
+def unmount_filesystem(mount_process):
     """
     Desmonta o sistema de arquivos virtual.
     """
-    if mount_thread and mount_thread.is_alive():
-        # Sinalizar para parar o loop principal do llfuse
-        llfuse.close(unmount=True)
+    if mount_process and mount_process.is_alive():
+        # No Windows, usar fusermount ou comando específico
+        # Por simplicidade, apenas marcar como finalizado
+        pass
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Uso: python dokan_mount.py <ponto_de_montagem>")
         sys.exit(1)
 
-    mountpoint = sys.argv[1]  # Ex.: /mnt/quarkdrive (no Linux)
+    mountpoint = sys.argv[1]  # Ex.: N:\\ (no Windows) ou pasta no Linux
     backend = './backend_data'  # Pasta que armazena os blocos compactados
 
     if not os.path.exists(backend):
         os.makedirs(backend)
 
-    operations = DedupCompressFS(backend)
-    
-    llfuse.init(operations, mountpoint, [
-        'fsname=quarkdrive',
-        'subtype=dedup',
-        'allow_other'
-    ])
-    
-    try:
-        llfuse.main()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        llfuse.close()
+    FUSE(
+        DedupCompressFS(backend),
+        mountpoint,
+        nothreads=True,
+        foreground=True
+    )

@@ -75,10 +75,10 @@ Exemplos de uso:
             return 1
             
     except KeyboardInterrupt:
-        print("\n⚠️  Operação cancelada pelo usuário")
+        print("\n  Operação cancelada pelo usuário")
         return 1
     except Exception as e:
-        print(f"❌ Erro: {e}")
+        print(f"[x] Erro: {e}")
         return 1
     
     return 0
@@ -87,11 +87,12 @@ def run_gui():
     """Executar interface gráfica"""
     try:
         import dearpygui.dearpygui as dpg
-        print("🚀 Iniciando interface gráfica do QuarkDrive com Dear PyGui...")
+        from gui.main_window import main as gui_main
+        print(" Iniciando interface gráfica do QuarkDrive com Dear PyGui...")
         gui_main()
     except ImportError as e:
-        print(f"❌ Erro ao importar GUI: {e}")
-        print("💡 Certifique-se de que o Dear PyGui está instalado: pip install dearpygui")
+        print(f"[x] Erro ao importar GUI: {e}")
+        print("Certifique-se de que o Dear PyGui está instalado: pip install dearpygui")
         sys.exit(1)
 
 def run_mount(args):
@@ -104,18 +105,18 @@ def run_mount(args):
         compress = not args.no_compress
         cache = not args.no_cache
         
-        print(f"🔧 Montando QuarkDrive em: {mount_point}")
-        print(f"   Deduplicação: {'✅' if dedup else '❌'}")
-        print(f"   Compressão: {'✅' if compress else '❌'}")
-        print(f"   Cache: {'✅' if cache else '❌'}")
+        print(f"   Montando QuarkDrive em: {mount_point}")
+        print(f"   Deduplicação: {'[✓]' if dedup else '[x]'}")
+        print(f"   Compressão: {'[✓]' if compress else '[x]'}")
+        print(f"   Cache: {'[✓]' if cache else '[x]'}")
         
         mount_filesystem(mount_point, dedup, compress, cache)
         
     except ImportError as e:
-        print(f"❌ Erro ao importar módulo de montagem: {e}")
+        print(f"[x] Erro ao importar módulo de montagem: {e}")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Erro ao montar sistema de arquivos: {e}")
+        print(f"[x] Erro ao montar sistema de arquivos: {e}")
         sys.exit(1)
 
 def run_store(args):
@@ -125,48 +126,50 @@ def run_store(args):
         
         file_path = args.file_path
         if not os.path.exists(file_path):
-            print(f"❌ Arquivo não encontrado: {file_path}")
+            print(f"[x] Arquivo não encontrado: {file_path}")
             sys.exit(1)
         
         manager = StorageManager()
-        print(f"📦 Armazenando arquivo: {file_path}")
+        print(f"Armazenando arquivo: {file_path}")
         
         result = manager.store_file(file_path, use_fast_hash=args.fast_hash)
         
         if result:
-            print(f"✅ Arquivo armazenado com sucesso!")
+            print(f"[✓] Arquivo armazenado com sucesso!")
             print(f"   Hash: {result}")
         else:
-            print(f"❌ Falha ao armazenar arquivo")
+            print(f"[x] Falha ao armazenar arquivo")
             
     except ImportError as e:
-        print(f"❌ Erro ao importar StorageManager: {e}")
+        print(f"[x] Erro ao importar StorageManager: {e}")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Erro ao armazenar arquivo: {e}")
+        print(f"[x] Erro ao armazenar arquivo: {e}")
         sys.exit(1)
 
-def run_stats():
+def show_stats():
     """Mostrar estatísticas do sistema"""
     try:
-        from core.manager import stats
+        from core.manager import StorageManager
         
-        print("📊 Estatísticas do QuarkDrive:")
+        print("Estatísticas do QuarkDrive:")
         print("=" * 40)
         
-        current_stats = stats.get_current_stats()
+        # Criar instância do manager para acessar stats
+        manager = StorageManager()
+        current_stats = manager.stats.get_current_stats()
         
-        print(f"📁 Arquivos processados: {current_stats.get('processed_files_count', 0)}")
-        print(f"🔄 Arquivos deduplicados: {current_stats.get('duplicated_files_count', 0)}")
-        print(f"📦 Taxa de compressão: {current_stats.get('compression_ratio', 0):.1f}%")
-        print(f"💾 Espaço economizado: {current_stats.get('space_saved', 0)} bytes")
-        print(f"⚡ Extensões C++ ativas: {'✅' if check_cpp_extensions() else '❌'}")
+        print(f"Arquivos processados: {current_stats.get('processed_files_count', 0)}")
+        print(f"Arquivos deduplicados: {current_stats.get('duplicated_files_count', 0)}")
+        print(f"Taxa de compressão: {current_stats.get('compression_ratio', 0):.1f}%")
+        print(f"Espaço economizado: {current_stats.get('space_saved', 0)} bytes")
+        print(f"Extensões C++ ativas: {'[✓]' if check_cpp_extensions() else '[x]'}")
         
     except ImportError as e:
-        print(f"❌ Erro ao importar módulo de estatísticas: {e}")
+        print(f"[x] Erro ao importar módulo de estatísticas: {e}")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Erro ao obter estatísticas: {e}")
+        print(f"[x] Erro ao obter estatísticas: {e}")
         sys.exit(1)
 
 def run_tests(args):
@@ -175,25 +178,25 @@ def run_tests(args):
         import subprocess
         
         if args.unit:
-            print("🧪 Executando testes unitários...")
+            print("Executando testes unitários...")
             result = subprocess.run([sys.executable, '-m', 'pytest', 'tests/unit/', '-v'], 
                                   capture_output=False)
         elif args.integration:
-            print("🔧 Executando testes de integração...")
+            print("Executando testes de integração...")
             result = subprocess.run([sys.executable, '-m', 'pytest', 'tests/integration/', '-v'], 
                                   capture_output=False)
         else:
-            print("🧪 Executando todos os testes...")
+            print("Executando todos os testes...")
             result = subprocess.run([sys.executable, '-m', 'pytest', 'tests/', '-v'], 
                                   capture_output=False)
         
         sys.exit(result.returncode)
         
     except FileNotFoundError:
-        print("❌ pytest não encontrado. Instale com: pip install pytest")
+        print("[x] pytest não encontrado. Instale com: pip install pytest")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Erro ao executar testes: {e}")
+        print(f"[x] Erro ao executar testes: {e}")
         sys.exit(1)
 
 def check_cpp_extensions():

@@ -1,4 +1,4 @@
-llfuse
+fusepy==3.0.1
 dearpygui==2.0.0
 pybind11==2.11.1
 zstandard==0.22.0

@@ -1,11 +1,9 @@
 import os
-from deduplication import calculate_file_hash
-from compression import Compressor
-from database import MetadataDB
+from .deduplication import calculate_file_hash
+from .compression import Compressor
+from .database import MetadataDB
 from cache.cache import HybridCache
-from stats_manager import StatsManager
-
-stats = StatsManager()
+from .stats_manager import StatsManager
 
 class StorageManager:
     def __init__(self, data_folder='./data/blobs', db_path='metadata.db'):
@@ -14,9 +12,11 @@ class StorageManager:
         os.makedirs(self.data_folder, exist_ok=True)
         self.compressor = Compressor(level=5)
         self.cache = HybridCache(
-            ram_limit_ratio=0.1,  # Usar ratio ao invés de bytes
+            ram_limit_ratio=0.1,
             ssd_folder='./cache_ssd'
         )
+        # Adicionar instância local do stats manager
+        self.stats = StatsManager()
         
     def _get_blob_path(self, hash_value):
         return os.path.join(self.data_folder, f'{hash_value}.zst')
@@ -42,7 +42,8 @@ class StorageManager:
             blob_path = self._get_blob_path(hash_value)
             with open(file_path, 'rb') as f:
                 data = f.read()
-                compressed = self.compressor.compress(data)
+                # CORRIGIR: usar compress_data com stats_manager
+                compressed = self.compressor.compress_data(data, stats_manager=self.stats)
                 with open(blob_path, 'wb') as out:
                     out.write(compressed)
 

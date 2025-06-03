@@ -1,4 +1,3 @@
-from manager import stats
 import zstandard as zstd
 import threading
 
@@ -18,10 +17,8 @@ def calcular_taxa():
         if _compression_stats['total_original_size'] == 0:
             return 0.0
         
-        # Calcula a taxa de compressão como porcentagem de redução
-        reduction = (_compression_stats['total_original_size'] - _compression_stats['total_compressed_size'])
-        compression_ratio = (reduction / _compression_stats['total_original_size']) * 100
-        return max(0.0, min(100.0, compression_ratio))  # Garante que está entre 0-100%
+        ratio = (1 - _compression_stats['total_compressed_size'] / _compression_stats['total_original_size']) * 100
+        return max(0.0, ratio)
 
 def _update_compression_stats(original_size: int, compressed_size: int):
     """
@@ -43,10 +40,26 @@ class Compressor:
         _update_compression_stats(len(data), len(compressed))
         return compressed
 
+    def compress_data(self, data: bytes, stats_manager=None) -> bytes:
+        """
+        Comprime dados e opcionalmente atualiza estatísticas via stats_manager
+        """
+        compressed = self.cctx.compress(data)
+        
+        # Atualiza estatísticas locais
+        _update_compression_stats(len(data), len(compressed))
+        
+        # Atualiza estatísticas via manager se fornecido
+        if stats_manager:
+            compression_ratio = (1 - len(compressed) / len(data)) * 100
+            stats_manager.update_compression_ratio(compression_ratio)
+        
+        return compressed
+
     def decompress(self, data: bytes) -> bytes:
         return self.dctx.decompress(data)
 
-def compress_file(input_path: str, output_path: str, level=5):
+def compress_file(input_path: str, output_path: str, level=5, stats_manager=None):
     compressor = zstd.ZstdCompressor(level=level)
     total_original = 0
     total_compressed = 0
@@ -59,16 +72,16 @@ def compress_file(input_path: str, output_path: str, level=5):
                 total_original += original_size
                 
                 # Estima o tamanho comprimido (aproximação)
-                # Em um cenário real, seria melhor medir o tamanho real do output
-                estimated_compressed = int(original_size * 0.3)  # Estimativa baseada em zstd
+                estimated_compressed = int(original_size * 0.3)
                 total_compressed += estimated_compressed
     
     # Atualiza estatísticas globais
     _update_compression_stats(total_original, total_compressed)
     
-    # Calcula e atualiza a taxa de compressão
-    compression_ratio = calcular_taxa()
-    stats.update_compression_ratio(compression_ratio)
+    # Atualiza estatísticas via manager se fornecido
+    if stats_manager:
+        compression_ratio = calcular_taxa()
+        stats_manager.update_compression_ratio(compression_ratio)
 
 def decompress_file(input_path: str, output_path: str):
     decompressor = zstd.ZstdDecompressor()
