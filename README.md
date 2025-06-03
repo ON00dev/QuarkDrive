@@ -1,4 +1,4 @@
-# QuarkDrive 
+# QuarkDrive 🚀
 
 **Optimized Storage System with Deduplication and Compression**
 
