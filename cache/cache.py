@@ -9,10 +9,9 @@ class HybridCache:
     """
     Cache inteligente: RAM (LRU Adaptativo) + SSD (persistente) + Write-Back.
     """
-    def __init__(self,
-                 ram_limit_ratio=0.1,   # 10% da RAM total
-                 ssd_folder='./cache_ssd',
-                 write_back_delay=2.0):  # segundos
+    # Adicionar estes métodos à classe HybridCache:
+
+    def __init__(self, ram_limit_ratio=0.1, ssd_folder='./cache_ssd', write_back_delay=2.0):
         # Limite dinâmico da RAM
         total_ram = psutil.virtual_memory().total
         self.ram_limit = int(total_ram * ram_limit_ratio)
@@ -27,8 +26,13 @@ class HybridCache:
         self.write_back_delay = write_back_delay
         self.write_back_queue = set()
         self._start_write_back_thread()
+        
+        # Estatísticas de cache
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.ram_hits = 0
+        self.ssd_hits = 0
 
-    # RAM Cache (LRU Adaptativo)
     def get_from_ram(self, key):
         with self.lock:
             if key in self.ram_cache:
@@ -98,19 +102,70 @@ class HybridCache:
             if data:
                 self.add_to_ssd(key, data)
 
-    # Lookup Pipeline
+    def get_usage_percentage(self):
+        """Obter porcentagem de uso do cache RAM"""
+        with self.lock:
+            if self.ram_limit > 0:
+                return (self.ram_size / self.ram_limit) * 100
+            return 0
+
+    def get_cache_stats(self):
+        """Obter estatísticas detalhadas do cache"""
+        with self.lock:
+            total_requests = self.cache_hits + self.cache_misses
+            hit_rate = (self.cache_hits / max(1, total_requests)) * 100
+            
+            # Calcular tamanho do cache SSD
+            ssd_size = 0
+            try:
+                for filename in os.listdir(self.ssd_folder):
+                    if filename.endswith('.cache'):
+                        filepath = os.path.join(self.ssd_folder, filename)
+                        ssd_size += os.path.getsize(filepath)
+            except:
+                pass
+            
+            return {
+                'ram_size': self.ram_size,
+                'ram_limit': self.ram_limit,
+                'ram_usage_percent': self.get_usage_percentage(),
+                'ssd_size': ssd_size,
+                'cache_hits': self.cache_hits,
+                'cache_misses': self.cache_misses,
+                'ram_hits': self.ram_hits,
+                'ssd_hits': self.ssd_hits,
+                'hit_rate': hit_rate,
+                'total_requests': total_requests
+            }
+
     def get(self, key):
+        """Método get modificado para rastrear estatísticas"""
         data = self.get_from_ram(key)
         if data:
+            with self.lock:
+                self.cache_hits += 1
+                self.ram_hits += 1
             return data, 'RAM'
-
+    
         data = self.get_from_ssd(key)
         if data:
             self.add_to_ram(key, data)
+            with self.lock:
+                self.cache_hits += 1
+                self.ssd_hits += 1
             return data, 'SSD'
-
+    
+        with self.lock:
+            self.cache_misses += 1
         return None, None
 
+    def reset_stats(self):
+        """Resetar estatísticas do cache"""
+        with self.lock:
+            self.cache_hits = 0
+            self.cache_misses = 0
+            self.ram_hits = 0
+            self.ssd_hits = 0
     def add(self, key, data: bytes):
         self.add_to_ram(key, data)
         self.write_back_queue.add(key)  # adia gravação no SSD

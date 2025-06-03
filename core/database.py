@@ -73,3 +73,70 @@ class MetadataDB:
 
     def close(self):
         self.conn.close()
+
+
+# Adicionar estes métodos à classe MetadataDB:
+
+def get_total_files(self):
+    """Obter número total de arquivos"""
+    cur = self.conn.cursor()
+    cur.execute('SELECT COUNT(*) FROM files')
+    return cur.fetchone()[0]
+
+def get_total_blobs(self):
+    """Obter número total de blobs únicos"""
+    cur = self.conn.cursor()
+    cur.execute('SELECT COUNT(*) FROM blobs')
+    return cur.fetchone()[0]
+
+def get_total_original_size(self):
+    """Obter tamanho total original de todos os blobs"""
+    cur = self.conn.cursor()
+    cur.execute('SELECT SUM(size_original * ref_count) FROM blobs')
+    result = cur.fetchone()[0]
+    return result if result else 0
+
+def get_total_compressed_size(self):
+    """Obter tamanho total comprimido de todos os blobs"""
+    cur = self.conn.cursor()
+    cur.execute('SELECT SUM(size_compressed) FROM blobs')
+    result = cur.fetchone()[0]
+    return result if result else 0
+
+def get_duplicate_files_count(self):
+    """Obter número de arquivos duplicados"""
+    cur = self.conn.cursor()
+    cur.execute('''
+        SELECT COUNT(*) FROM files f
+        JOIN blobs b ON f.hash = b.hash
+        WHERE b.ref_count > 1
+    ''')
+    return cur.fetchone()[0]
+
+def get_compression_stats(self):
+    """Obter estatísticas detalhadas de compressão"""
+    cur = self.conn.cursor()
+    cur.execute('''
+        SELECT 
+            SUM(size_original * ref_count) as total_original,
+            SUM(size_compressed) as total_compressed,
+            AVG((size_original - size_compressed) * 100.0 / size_original) as avg_compression_ratio,
+            COUNT(*) as total_blobs
+        FROM blobs
+        WHERE size_original > 0
+    ''')
+    return cur.fetchone()
+
+def get_storage_efficiency(self):
+    """Calcular eficiência de armazenamento"""
+    cur = self.conn.cursor()
+    cur.execute('''
+        SELECT 
+            COUNT(DISTINCT f.hash) as unique_files,
+            COUNT(f.id) as total_files,
+            SUM(f.size) as total_file_size,
+            SUM(b.size_compressed) as total_storage_used
+        FROM files f
+        JOIN blobs b ON f.hash = b.hash
+    ''')
+    return cur.fetchone()
