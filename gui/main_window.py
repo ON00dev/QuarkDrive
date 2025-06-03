@@ -95,7 +95,7 @@ class QuarkDriveGUI:
             with dpg.theme_component(dpg.mvButton):
                 dpg.add_theme_color(dpg.mvThemeCol_Button, (40, 180, 60, 255))
                 dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (60, 200, 80, 255))
-                dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (30, 160, 50, 255))
+                dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (30, 160, 110, 255))
         
         # Tema para botões de perigo
         with dpg.theme() as self.danger_theme:
@@ -222,7 +222,7 @@ class QuarkDriveGUI:
                                     
                                 with dpg.table_cell():
                                     with dpg.group(horizontal=True):
-                                        dpg.add_image(self.icons['atualizar'], width=16, height=16)
+                                        dpg.add_image(self.icons['deduplicar'], width=16, height=16)
                                         dpg.add_text("Arquivos Duplicados")
                                     dpg.add_text("0", tag="duplicate_files", color=(150, 255, 150, 255))
                             
@@ -319,7 +319,7 @@ class QuarkDriveGUI:
         try:
             mount_point = dpg.get_value("mount_point_combo") if os.name == 'nt' else dpg.get_value("mount_point_input")
             if not mount_point:
-                self._append_log("[ERROR] [x] Ponto de montagem não especificado")
+                self._append_log("[ERROR] Ponto de montagem não especificado")
                 return
             
             self._update_status_icon("mounting")
@@ -338,7 +338,7 @@ class QuarkDriveGUI:
             mount_thread.start()
             
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao iniciar montagem: {e}")
+            self._append_log(f"[ERROR] Erro ao iniciar montagem: {e}")
     
     def _mount_worker(self, mount_point, enable_dedup, enable_compression, enable_cache):
         """Worker para montagem em thread separada"""
@@ -348,7 +348,7 @@ class QuarkDriveGUI:
             
             self._update_status_icon("mounted")
             self.is_mounted = True
-            self._append_log(f"[SUCCESS] [✓] Sistema montado em {mount_point}")
+            self._append_log(f"[SUCCESS] Sistema montado em {mount_point}")
             
             # Habilitar/desabilitar botões
             dpg.configure_item("mount_btn", enabled=False)
@@ -357,7 +357,7 @@ class QuarkDriveGUI:
         except Exception as e:
             self._update_status_icon("error")
             self.is_mounted = False
-            self._append_log(f"[ERROR] [x] Erro ao montar: {e}")
+            self._append_log(f"[ERROR] Erro ao montar: {e}")
     
     def _stop_mount(self):
         """Parar montagem do sistema de arquivos"""
@@ -374,7 +374,7 @@ class QuarkDriveGUI:
             unmount_thread.start()
             
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao desmontar: {e}")
+            self._append_log(f"[ERROR] Erro ao desmontar: {e}")
     
     def _unmount_worker(self):
         """Worker para desmontagem em thread separada"""
@@ -384,14 +384,14 @@ class QuarkDriveGUI:
             
             self._update_status_icon("unmounted")
             self.is_mounted = False
-            self._append_log("[SUCCESS] [✓] Sistema desmontado com sucesso")
+            self._append_log("[SUCCESS] Sistema desmontado com sucesso")
             
             # Habilitar/desabilitar botões
             dpg.configure_item("mount_btn", enabled=True)
             dpg.configure_item("unmount_btn", enabled=False)
             
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao desmontar: {e}")
+            self._append_log(f"[ERROR] Erro ao desmontar: {e}")
     
     def _force_update_stats(self):
         """Forçar atualização das estatísticas"""
@@ -402,10 +402,10 @@ class QuarkDriveGUI:
             dpg.set_value("compression_ratio", "65%")
             dpg.set_value("cache_usage", "23%")
             
-            self._append_log("[SUCCESS] [✓] Estatísticas atualizadas")
+            self._append_log("[SUCCESS] Estatísticas atualizadas")
             
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao atualizar estatísticas: {str(e)}")
+            self._append_log(f"[ERROR] Erro ao atualizar estatísticas: {str(e)}")
     
     def _run_tests(self):
         """Executar testes do sistema"""
@@ -418,16 +418,16 @@ class QuarkDriveGUI:
                                   capture_output=True, text=True, cwd=Path(__file__).parent.parent)
             
             if result.returncode == 0:
-                self._append_log("[SUCCESS] [✓] Todos os testes passaram!")
+                self._append_log("[SUCCESS] Todos os testes passaram!")
             else:
-                self._append_log(f"[WARNING] ⚠️ Alguns testes falharam. Código: {result.returncode}")
+                self._append_log(f"[WARNING] Alguns testes falharam. Código: {result.returncode}")
                 
             # Adicionar output dos testes aos logs
             if result.stdout:
                 self._append_log(f"[OUTPUT] {result.stdout}")
                 
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao executar testes: {str(e)}")
+            self._append_log(f"[ERROR] Erro ao executar testes: {str(e)}")
     
     def _show_about(self):
         """Mostrar janela sobre o QuarkDrive"""
@@ -441,7 +441,7 @@ class QuarkDriveGUI:
                        pos=(200, 150), modal=True, no_resize=True):
             
             with dpg.group(horizontal=True):
-                dpg.add_image("./QuarkDrive/gui/icons/almoco-foguete.png", width=32, height=32)
+                dpg.add_image(self.icons['foguete'], width=32, height=32)
                 dpg.add_text("QuarkDrive v1.0", color=(100, 200, 255, 255))
             
             dpg.add_spacer(height=15)
@@ -449,22 +449,38 @@ class QuarkDriveGUI:
             dpg.add_spacer(height=20)
             
             dpg.add_text("Recursos:", color=(150, 200, 255, 255))
-            dpg.add_text("  • ./QuarkDrive/gui/icons/atualizar.png Deduplicação inteligente de arquivos")
-            dpg.add_text("  • ./QuarkDrive/gui/icons/comprimir-alt.png Compressão avançada com ZSTD")
-            dpg.add_text("  • ./QuarkDrive/gui/icons/cache.png Extensões C++ para máxima performance")
-            dpg.add_text("  • ./QuarkDrive/gui/icons/disco.png Cache híbrido RAM + SSD")
-            dpg.add_text("  • ./QuarkDrive/gui/icons/pasta-menos.png Sistema de arquivos virtual")
+            
+            # Usar ícones como imagens em vez de texto
+            with dpg.group(horizontal=True):
+                dpg.add_image(self.icons['deduplicar'], width=16, height=16)
+                dpg.add_text("Deduplicação inteligente de arquivos")
+            
+            with dpg.group(horizontal=True):
+                dpg.add_image(self.icons['comprimir'], width=16, height=16)
+                dpg.add_text("Compressão avançada com ZSTD")
+            
+            with dpg.group(horizontal=True):
+                dpg.add_image(self.icons['cache'], width=16, height=16)
+                dpg.add_text("Extensões C++ para máxima performance")
+            
+            with dpg.group(horizontal=True):
+                dpg.add_image(self.icons['disco'], width=16, height=16)
+                dpg.add_text("Cache híbrido RAM + SSD")
+            
+            with dpg.group(horizontal=True):
+                dpg.add_image(self.icons['pasta'], width=16, height=16)
+                dpg.add_text("Sistema de arquivos virtual")
             
             dpg.add_spacer(height=20)
             
-            dpg.add_text("🛠️ Tecnologias:", color=(150, 200, 255, 255))
+            dpg.add_text("Tecnologias:", color=(150, 200, 255, 255))
             dpg.add_text("Python 3.12+, Dear PyGui, ZSTD, C++ Extensions")
             
             dpg.add_spacer(height=20)
             
             with dpg.group(horizontal=True):
                 dpg.add_spacer(width=150)
-                close_btn = dpg.add_button(label="[✓] Fechar", callback=close_about, width=100, height=35)
+                close_btn = dpg.add_button(label="Fechar", callback=close_about, width=100, height=35)
                 dpg.bind_item_theme(close_btn, self.success_theme)
 
     def run(self):
@@ -526,7 +542,7 @@ class QuarkDriveGUI:
         except ImportError:
             self._append_log("[WARNING] tkinter não disponível. Instale python-tk para usar o navegador de arquivos.")
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao abrir navegador de arquivos: {str(e)}")
+            self._append_log(f"[ERROR] Erro ao abrir navegador de arquivos: {str(e)}")
 
     def _append_log(self, message):
         """Adicionar mensagem ao log"""
@@ -541,8 +557,8 @@ class QuarkDriveGUI:
                 new_text = current_text + "\n" + log_message if current_text else log_message
                 dpg.set_value("log_text", new_text)
                 
-                # Auto-scroll para o final
-                dpg.set_y_scroll("log_text", -1.0)
+                # Remover auto-scroll que está causando erro
+                # dpg.set_y_scroll("log_text", -1.0)
         except Exception as e:
             print(f"Erro ao adicionar log: {e}")
     
@@ -590,7 +606,7 @@ class QuarkDriveGUI:
                         f.write("=" * 50 + "\n\n")
                         f.write(log_content)
                     
-                    self._append_log(f"[SUCCESS] [✓] Logs salvos em: {file_path}")
+                    self._append_log(f"[SUCCESS] Logs salvos em: {file_path}")
                 else:
                     self._append_log("[WARNING] Nenhum log encontrado para salvar")
             
@@ -599,7 +615,7 @@ class QuarkDriveGUI:
         except ImportError:
             self._append_log("[WARNING] tkinter não disponível. Não é possível salvar logs.")
         except Exception as e:
-            self._append_log(f"[ERROR] [x] Erro ao salvar logs: {str(e)}")
+            self._append_log(f"[ERROR] Erro ao salvar logs: {str(e)}")
 
 def main():
     """Função principal para executar a GUI"""
