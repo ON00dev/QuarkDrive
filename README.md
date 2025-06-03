@@ -1,4 +1,6 @@
-![QuarkDrive](./quarkdrive_banner.png)
+<p align="center">
+  <img src="./README.md-banner.png" alt="QuarkDrive Banner">
+</p>
 
 **Optimized Storage System with Deduplication and Compression**
 
