@@ -24,7 +24,14 @@ class MinGWBuildExt(build_ext):
             # Adiciona flags específicas do GCC
             for ext in self.extensions:
                 ext.extra_compile_args.extend(["-O3", "-std=c++14"])
-                ext.extra_link_args = ["-static-libgcc", "-static-libstdc++"]
+                # Link estático de todas as bibliotecas
+                ext.extra_link_args = [
+                    "-static-libgcc", 
+                    "-static-libstdc++",
+                    "-static",  # Força link estático de todas as bibliotecas
+                    "-Wl,--whole-archive",
+                    "-Wl,--no-whole-archive"
+                ]
         super().build_extensions()
 
 ext_modules = [
@@ -60,6 +67,6 @@ ext_modules = [
 setup(
     name="quarkdrive",
     ext_modules=ext_modules,
-    cmdclass={"build_ext": MinGWBuildExt},  # Usa a classe customizada
+    cmdclass={"build_ext": build_ext},  # Usar o build_ext padrão
     zip_safe=False,
 )

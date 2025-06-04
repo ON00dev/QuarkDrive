@@ -10,6 +10,7 @@ import os
 import argparse
 import dearpygui.dearpygui as dpg
 from pathlib import Path
+import platform # Importar platform no escopo global
 
 # Adicionar o diretório raiz ao path para imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -202,11 +203,24 @@ def run_tests(args):
 def check_cpp_extensions():
     """Verificar se as extensões C++ estão disponíveis"""
     try:
-        import extensions.compression_module
-        import extensions.hash_module
+        # Tentar importar da pasta lib, assumindo que os .pyd estão lá
+        import lib.compression_module
+        import lib.hash_module
+        if platform.system() == "Windows":
+            import lib.windows_vfs_module
         return True
-    except ImportError:
+    except ImportError as e:
+        print(f"ERRO: Módulo C++ não encontrado ou não compilado: {e}")
         return False
 
 if __name__ == '__main__':
+    # A verificação inicial agora usará o 'platform' importado globalmente
+    # e a check_cpp_extensions corrigida
+    if platform.system() == "Windows" and not check_cpp_extensions():
+        # A mensagem de erro detalhada virá de check_cpp_extensions
+        # print("ERRO: Pelo menos um módulo C++ essencial não foi carregado.") 
+        # Você pode decidir se quer sair ou não aqui, dependendo da criticidade.
+        # sys.exit(1) 
+        pass # Deixar a aplicação continuar e possivelmente falhar mais tarde se o módulo for usado
+    
     sys.exit(main())

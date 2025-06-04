@@ -35,6 +35,5 @@ pip install --upgrade setuptools wheel
 4️⃣ Compile with verbose flags (for diagnostics)
 
 ```bash
-python setup.py build_ext --inplace --verbose
-python setup.py clean --all # Clean build artifacts
+python compile_extensions.py # Compile all extensions to /lib folder
 ```
