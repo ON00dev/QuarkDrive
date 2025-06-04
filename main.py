@@ -14,6 +14,12 @@ import platform # Importar platform no escopo global
 
 # Adicionar o diretório raiz ao path para imports
 sys.path.insert(0, str(Path(__file__).parent))
+# Adicionar pasta lib ao path de importação para módulos C++
+if platform.system() == "Windows":
+    os.add_dll_directory(str(Path(__file__).parent / "lib"))
+    os.add_dll_directory("C:/msys64/mingw64/bin")
+
+
 
 def main():
     """Função principal do QuarkDrive"""
@@ -201,26 +207,19 @@ def run_tests(args):
         sys.exit(1)
 
 def check_cpp_extensions():
-    """Verificar se as extensões C++ estão disponíveis"""
     try:
-        # Tentar importar da pasta lib, assumindo que os .pyd estão lá
-        import lib.compression_module
-        import lib.hash_module
+        import compression_module
+        import hash_module
         if platform.system() == "Windows":
-            import lib.windows_vfs_module
+            import windows_vfs_module
         return True
     except ImportError as e:
-        print(f"ERRO: Módulo C++ não encontrado ou não compilado: {e}")
+        print(f"[x] Erro ao carregar extensão C++: {e}")
         return False
 
 if __name__ == '__main__':
-    # A verificação inicial agora usará o 'platform' importado globalmente
-    # e a check_cpp_extensions corrigida
-    if platform.system() == "Windows" and not check_cpp_extensions():
-        # A mensagem de erro detalhada virá de check_cpp_extensions
-        # print("ERRO: Pelo menos um módulo C++ essencial não foi carregado.") 
-        # Você pode decidir se quer sair ou não aqui, dependendo da criticidade.
-        # sys.exit(1) 
-        pass # Deixar a aplicação continuar e possivelmente falhar mais tarde se o módulo for usado
-    
+    if not check_cpp_extensions():
+        print("[x] As extensões C++ não foram carregadas. Verifique se estão compiladas corretamente e se as DLLs estão disponíveis.")
+        sys.exit(1)
+
     sys.exit(main())

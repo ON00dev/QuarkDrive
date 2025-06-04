@@ -5,111 +5,11 @@ Platform: Windows AMD64
 === STDOUT ===
 running build_ext
 building 'compression_module' extension
-creating build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions
 g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -DVERSION_INFO=\"dev\" -IC:/Repo/QuarkDrive/gnu-venv/lib/python3.12/site-packages/pybind11/include -IC:/Repo/QuarkDrive/gnu-venv/include -IC:/msys64/mingw64/include/python3.12 -c extensions/compression_module.cpp -o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.o -fvisibility=hidden -g0 -std=c++17
 writing build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.cp312-mingw_x86_64_msvcrt_gnu.def
-creating build/lib.mingw_x86_64_msvcrt_gnu-cpython-312
 g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -shared -Wl,--enable-auto-image-base -s build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.cp312-mingw_x86_64_msvcrt_gnu.def -LC:/msys64/mingw64/lib -LC:/msys64/mingw64/lib -lzstd -lxxhash -lbz2 -llzma -llz4 -lbrotlicommon -lbrotlidec -lbrotlienc -lpython3.12 -o build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/compression_module.cp312-mingw_x86_64_msvcrt_gnu.pyd
-building 'hash_module' extension
-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -DVERSION_INFO=\"dev\" -IC:/Repo/QuarkDrive/gnu-venv/lib/python3.12/site-packages/pybind11/include -IC:/Repo/QuarkDrive/gnu-venv/include -IC:/msys64/mingw64/include/python3.12 -c extensions/hash_module.cpp -o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/hash_module.o -fvisibility=hidden -g0 -std=c++17
-writing build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/hash_module.cp312-mingw_x86_64_msvcrt_gnu.def
-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -shared -Wl,--enable-auto-image-base -s build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/hash_module.o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/hash_module.cp312-mingw_x86_64_msvcrt_gnu.def -LC:/msys64/mingw64/lib -LC:/msys64/mingw64/lib -lxxhash -lssl -lcrypto -lpython3.12 -o build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/hash_module.cp312-mingw_x86_64_msvcrt_gnu.pyd
-building 'windows_vfs_module' extension
-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -DVERSION_INFO=\"dev\" -IC:/Repo/QuarkDrive/gnu-venv/lib/python3.12/site-packages/pybind11/include -IC:/Repo/QuarkDrive/gnu-venv/include -IC:/msys64/mingw64/include/python3.12 -c extensions/windows_vfs_module.cpp -o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/windows_vfs_module.o -fvisibility=hidden -g0 -std=c++17
-writing build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/windows_vfs_module.cp312-mingw_x86_64_msvcrt_gnu.def
-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -shared -Wl,--enable-auto-image-base -s build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/windows_vfs_module.o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/windows_vfs_module.cp312-mingw_x86_64_msvcrt_gnu.def -LC:/msys64/mingw64/lib -lpython3.12 -o build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/windows_vfs_module.cp312-mingw_x86_64_msvcrt_gnu.pyd
 copying build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/compression_module.cp312-mingw_x86_64_msvcrt_gnu.pyd -> 
 copying build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/hash_module.cp312-mingw_x86_64_msvcrt_gnu.pyd -> 
 copying build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/windows_vfs_module.cp312-mingw_x86_64_msvcrt_gnu.pyd -> 
 
 === STDERR ===
-extensions/hash_module.cpp: In static member function 'static std::string FastHasher::sha256(const std::vector<unsigned char>&)':
-extensions/hash_module.cpp:23:20: warning: 'int SHA256_Init(SHA256_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   23 |         SHA256_Init(&sha256);
-      |         ~~~~~~~~~~~^~~~~~~~~
-In file included from extensions/hash_module.cpp:7:
-C:/msys64/mingw64/include/openssl/sha.h:73:27: note: declared here
-   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
-      |                           ^~~~~~~~~~~
-extensions/hash_module.cpp:24:22: warning: 'int SHA256_Update(SHA256_CTX*, const void*, size_t)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   24 |         SHA256_Update(&sha256, data.data(), data.size());
-      |         ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:74:27: note: declared here
-   74 | OSSL_DEPRECATEDIN_3_0 int SHA256_Update(SHA256_CTX *c,
-      |                           ^~~~~~~~~~~~~
-extensions/hash_module.cpp:25:21: warning: 'int SHA256_Final(unsigned char*, SHA256_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   25 |         SHA256_Final(hash, &sha256);
-      |         ~~~~~~~~~~~~^~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:76:27: note: declared here
-   76 | OSSL_DEPRECATEDIN_3_0 int SHA256_Final(unsigned char *md, SHA256_CTX *c);
-      |                           ^~~~~~~~~~~~
-extensions/hash_module.cpp: In static member function 'static std::string FastHasher::sha256_file(const std::string&)':
-extensions/hash_module.cpp:38:20: warning: 'int SHA256_Init(SHA256_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   38 |         SHA256_Init(&sha256);
-      |         ~~~~~~~~~~~^~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:73:27: note: declared here
-   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
-      |                           ^~~~~~~~~~~
-extensions/hash_module.cpp:42:26: warning: 'int SHA256_Update(SHA256_CTX*, const void*, size_t)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   42 |             SHA256_Update(&sha256, buffer, file.gcount());
-      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:74:27: note: declared here
-   74 | OSSL_DEPRECATEDIN_3_0 int SHA256_Update(SHA256_CTX *c,
-      |                           ^~~~~~~~~~~~~
-extensions/hash_module.cpp:46:21: warning: 'int SHA256_Final(unsigned char*, SHA256_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   46 |         SHA256_Final(hash, &sha256);
-      |         ~~~~~~~~~~~~^~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:76:27: note: declared here
-   76 | OSSL_DEPRECATEDIN_3_0 int SHA256_Final(unsigned char *md, SHA256_CTX *c);
-      |                           ^~~~~~~~~~~~
-extensions/hash_module.cpp: In static member function 'static std::string FastHasher::md5(const std::vector<unsigned char>&)':
-extensions/hash_module.cpp:55:17: warning: 'int MD5_Init(MD5_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   55 |         MD5_Init(&md5);
-      |         ~~~~~~~~^~~~~~
-In file included from extensions/hash_module.cpp:8:
-C:/msys64/mingw64/include/openssl/md5.h:49:27: note: declared here
-   49 | OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX *c);
-      |                           ^~~~~~~~
-extensions/hash_module.cpp:56:19: warning: 'int MD5_Update(MD5_CTX*, const void*, size_t)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   56 |         MD5_Update(&md5, data.data(), data.size());
-      |         ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/md5.h:50:27: note: declared here
-   50 | OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX *c, const void *data, size_t len);
-      |                           ^~~~~~~~~~
-extensions/hash_module.cpp:57:18: warning: 'int MD5_Final(unsigned char*, MD5_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-   57 |         MD5_Final(hash, &md5);
-      |         ~~~~~~~~~^~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/md5.h:51:27: note: declared here
-   51 | OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char *md, MD5_CTX *c);
-      |                           ^~~~~~~~~
-extensions/hash_module.cpp: In constructor 'FastHasher::IncrementalHasher::IncrementalHasher()':
-extensions/hash_module.cpp:105:14: warning: 'FastHasher::IncrementalHasher::xxh_initialized' will be initialized after [-Wreorder]
-  105 |         bool xxh_initialized;
-      |              ^~~~~~~~~~~~~~~
-extensions/hash_module.cpp:103:24: warning:   'XXH64_state_t* FastHasher::IncrementalHasher::xxh_state' [-Wreorder]
-  103 |         XXH64_state_t* xxh_state;
-      |                        ^~~~~~~~~
-extensions/hash_module.cpp:108:9: warning:   when initialized here [-Wreorder]
-  108 |         IncrementalHasher() : sha256_initialized(false), xxh_initialized(false), xxh_state(nullptr) {}
-      |         ^~~~~~~~~~~~~~~~~
-extensions/hash_module.cpp: In member function 'void FastHasher::IncrementalHasher::init_sha256()':
-extensions/hash_module.cpp:117:24: warning: 'int SHA256_Init(SHA256_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-  117 |             SHA256_Init(&sha256_ctx);
-      |             ~~~~~~~~~~~^~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:73:27: note: declared here
-   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
-      |                           ^~~~~~~~~~~
-extensions/hash_module.cpp: In member function 'void FastHasher::IncrementalHasher::update(const std::vector<unsigned char>&)':
-extensions/hash_module.cpp:132:30: warning: 'int SHA256_Update(SHA256_CTX*, const void*, size_t)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-  132 |                 SHA256_Update(&sha256_ctx, data.data(), data.size());
-      |                 ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:74:27: note: declared here
-   74 | OSSL_DEPRECATEDIN_3_0 int SHA256_Update(SHA256_CTX *c,
-      |                           ^~~~~~~~~~~~~
-extensions/hash_module.cpp: In member function 'std::string FastHasher::IncrementalHasher::finalize_sha256()':
-extensions/hash_module.cpp:144:25: warning: 'int SHA256_Final(unsigned char*, SHA256_CTX*)' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
-  144 |             SHA256_Final(hash, &sha256_ctx);
-      |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
-C:/msys64/mingw64/include/openssl/sha.h:76:27: note: declared here
-   76 | OSSL_DEPRECATEDIN_3_0 int SHA256_Final(unsigned char *md, SHA256_CTX *c);
-      |                           ^~~~~~~~~~~~
