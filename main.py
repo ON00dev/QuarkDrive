@@ -16,10 +16,11 @@ import platform # Importar platform no escopo global
 sys.path.insert(0, str(Path(__file__).parent))
 # Adicionar pasta lib ao path de importação para módulos C++
 if platform.system() == "Windows":
-    os.add_dll_directory(str(Path(__file__).parent / "lib"))
+    lib_path = str(Path(__file__).parent / "lib")
+    os.add_dll_directory(lib_path)
     os.add_dll_directory("C:/msys64/mingw64/bin")
-
-
+    # Também adicionar ao PATH do sistema para garantia
+    os.environ['PATH'] = lib_path + os.pathsep + os.environ.get('PATH', '')
 
 def main():
     """Função principal do QuarkDrive"""

@@ -1,15 +1,12 @@
-=== BUILD OUTPUT ===
-Python: C:/Repo/QuarkDrive/gnu-venv/bin/python.exe
-Platform: Windows AMD64
+=== BUILD FAILED ===
+Return code: 1
 
 === STDOUT ===
 running build_ext
 building 'compression_module' extension
-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -DVERSION_INFO=\"dev\" -IC:/Repo/QuarkDrive/gnu-venv/lib/python3.12/site-packages/pybind11/include -IC:/Repo/QuarkDrive/gnu-venv/include -IC:/msys64/mingw64/include/python3.12 -c extensions/compression_module.cpp -o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.o -fvisibility=hidden -g0 -std=c++17
-writing build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.cp312-mingw_x86_64_msvcrt_gnu.def
-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -march=nocona -msahf -mtune=generic -O2 -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wp,-D__USE_MINGW_ANSI_STDIO=1 -O3 -shared -Wl,--enable-auto-image-base -s build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.o build/temp.mingw_x86_64_msvcrt_gnu-cpython-312/extensions/compression_module.cp312-mingw_x86_64_msvcrt_gnu.def -LC:/msys64/mingw64/lib -LC:/msys64/mingw64/lib -lzstd -lxxhash -lbz2 -llzma -llz4 -lbrotlicommon -lbrotlidec -lbrotlienc -lpython3.12 -o build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/compression_module.cp312-mingw_x86_64_msvcrt_gnu.pyd
-copying build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/compression_module.cp312-mingw_x86_64_msvcrt_gnu.pyd -> 
-copying build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/hash_module.cp312-mingw_x86_64_msvcrt_gnu.pyd -> 
-copying build/lib.mingw_x86_64_msvcrt_gnu-cpython-312/windows_vfs_module.cp312-mingw_x86_64_msvcrt_gnu.pyd -> 
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -DZSTD_STATIC_LINKING_ONLY -IC:\Repo\QuarkDrive\venv\Lib\site-packages\pybind11\include -I./include -IC:\vcpkg\packages\zstd_x64-windows-static\..\include -IC:\vcpkg\packages\lz4_x64-windows-static\..\include -IC:\Repo\QuarkDrive\venv\include -IC:\Users\Ronilda\AppData\Local\Programs\Python\Python312\include -IC:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Include "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include" "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /Tpextensions/compression_module.cpp /Fobuild\temp.win-amd64-cpython-312\Release\extensions\compression_module.obj /EHsc /std:c++17
+compression_module.cpp
+extensions/compression_module.cpp(6): fatal error C1083: N�o � poss�vel abrir arquivo incluir: 'zstd.h': No such file or directory
 
 === STDERR ===
+error: command 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX86\\x64\\cl.exe' failed with exit code 2

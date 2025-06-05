@@ -1,39 +1,20 @@
-# MSYS2 Mingw64
-### Compiling C++ Extensions to Create Dependencies
-Initial environment setup for GNU:
+# Extensões C++ Multiplataforma
+### Compilando Extensões C++ para Criar Dependências
 
-```bash
-pacman -Syu
-cd ./QuarkDrive
-python -m venv gnu-venv
-source gnu-venv/bin/activate
-pip install -r requirements.txt # Optional but recommended
-set CC=gcc
-set CXX=g++
-export PATH=$PATH:/c/Program\ Files/Git/cmd # To expose Windows git to GNU
-```
-Compilation process:
+## Windows
 
-1️⃣ Install build tools
-In MSYS2/Mingw64 (run as administrator):
+### Opção 1: Visual Studio Build Tools (Recomendado)
 
-```bash
-pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-g++ mingw-w64-x86_64-pkg-config mingw-w64-x86_64-cmake mingw-w64-x86_64-zstd mingw-w64-x86_64-openssl mingw-w64-x86_64-xxhash
-pacman -S --needed base-devel mingw-w64-x86_64-toolchain
-```
-2️⃣ Verify project dependencies
-For extensions using PyBind11 (your case):
+1️⃣ Instalar Visual Studio Build Tools
+- Baixe e instale o Visual Studio Build Tools
+- Inclua o workload "C++ build tools"
+- Inclua o Windows 10/11 SDK
 
-```bash
-pip install pybind11
-```
-3️⃣ Update build tools
-
-```bash
-pip install --upgrade setuptools wheel
-```
-4️⃣ Compile with verbose flags (for diagnostics)
-
-```bash
-python compile_extensions.py # Compile all extensions to /lib folder
+2️⃣ Instalar vcpkg (gerenciador de pacotes)
+```cmd
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+.\vcpkg integrate install
+.\vcpkg install brotli:x64-windows-static lz4:x64-windows-static xxhash:x64-windows-static bxzstr:x64-windows-static openssl:x64-windows-static zlib:x64-windows-static bzip2:x64-windows-static zstd:x64-windows-static liblzma:x64-windows-static
 ```
