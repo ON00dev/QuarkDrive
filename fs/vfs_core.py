@@ -1,7 +1,19 @@
 import os
 import errno
 import hashlib
-from fuse import FUSE, Operations
+import platform
+
+# Importar módulo correto baseado no SO
+if platform.system() == 'Windows':
+    # No Windows, usar uma classe base simples para Operations
+    class Operations:
+        pass
+    # FUSE será importado do módulo winfuse quando necessário
+    FUSE = None
+else:
+    # No Linux, usar fusepy
+    from fuse import FUSE, Operations
+
 from cache.cache import HybridCache
 import zstandard as zstd
 

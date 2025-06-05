@@ -190,7 +190,65 @@ public:
     }
 };
 
+// Mapa global para armazenar instâncias de DokanyVFS por letra de unidade
+static std::map<std::string, std::shared_ptr<DokanyVFS>> g_mounts;
+
+// Funções globais para gerenciar montagens
+bool mount_drive(const std::string& drive_letter, const std::string& backend_path) {
+    // Verificar se já existe uma montagem para esta letra
+    if (g_mounts.find(drive_letter) != g_mounts.end()) {
+        return false;
+    }
+    
+    // Criar nova instância
+    auto vfs = std::make_shared<DokanyVFS>();
+    bool success = vfs->mount(drive_letter);
+    
+    if (success) {
+        g_mounts[drive_letter] = vfs;
+    }
+    
+    return success;
+}
+
+bool unmount_drive(const std::string& drive_letter) {
+    auto it = g_mounts.find(drive_letter);
+    if (it == g_mounts.end()) {
+        return false;
+    }
+    
+    bool success = it->second->unmount();
+    if (success) {
+        g_mounts.erase(it);
+    }
+    
+    return success;
+}
+
+// Função para configurar callbacks
+void set_callbacks(
+    const std::string& drive_letter,
+    std::function<py::bytes(const std::string&)> read_cb,
+    std::function<void(const std::string&, const py::bytes&)> write_cb,
+    std::function<std::vector<std::string>(const std::string&)> list_cb,
+    std::function<bool(const std::string&)> exists_cb,
+    std::function<size_t(const std::string&)> size_cb) {
+    
+    auto it = g_mounts.find(drive_letter);
+    if (it == g_mounts.end()) {
+        throw std::runtime_error("Unidade não encontrada: " + drive_letter);
+    }
+    
+    auto& vfs = it->second;
+    if (read_cb) vfs->set_read_callback(read_cb);
+    if (write_cb) vfs->set_write_callback(write_cb);
+    if (list_cb) vfs->set_list_callback(list_cb);
+    if (exists_cb) vfs->set_exists_callback(exists_cb);
+    if (size_cb) vfs->set_size_callback(size_cb);
+}
+
 PYBIND11_MODULE(winfuse, m) {
+    // Classe existente
     py::class_<DokanyVFS>(m, "DokanyVFS")
         .def(py::init<>())
         .def("mount", &DokanyVFS::mount)
@@ -200,4 +258,9 @@ PYBIND11_MODULE(winfuse, m) {
         .def("set_list_callback", &DokanyVFS::set_list_callback)
         .def("set_exists_callback", &DokanyVFS::set_exists_callback)
         .def("set_size_callback", &DokanyVFS::set_size_callback);
+    
+    // Adicionar funções globais
+    m.def("mount_drive", &mount_drive, "Monta uma unidade virtual");
+    m.def("unmount_drive", &unmount_drive, "Desmonta uma unidade virtual");
+    m.def("set_callbacks", &set_callbacks, "Configura callbacks para uma unidade montada");
 }

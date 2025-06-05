@@ -9,6 +9,7 @@ import sys
 import os
 import threading
 import time
+import platform
 from pathlib import Path
 
 # Adicionar o diretório raiz ao path
@@ -29,11 +30,30 @@ class QuarkDriveGUI:
         self.is_mounted = False
         self.running = True
         
+        # Detectar sistema operacional
+        self.os_info = self._get_os_info()
+        
         # Criar contexto do Dear PyGui
         dpg.create_context()
         self._load_icons()
         self._setup_themes()
         self.create_interface()
+    
+    def _get_os_info(self):
+        """Detectar informações do sistema operacional"""
+        system = platform.system()
+        release = platform.release()
+        version = platform.version()
+        architecture = platform.architecture()[0]
+        
+        if system == 'Windows':
+            return f"Windows {release} ({architecture}) - Usando WinFUSE"
+        elif system == 'Linux':
+            return f"Linux {release} ({architecture}) - Usando FUSE"
+        elif system == 'Darwin':
+            return f"macOS {release} ({architecture}) - Usando FUSE"
+        else:
+            return f"{system} {release} ({architecture}) - Sistema não identificado"
     
     def _load_icons(self):
         """Carregar todos os ícones como texturas"""
@@ -57,7 +77,9 @@ class QuarkDriveGUI:
             'foguete': 'almoco-foguete.png',
             'deduplicar': 'deduplicar.png',
             'play': 'play.png',
-            'pontos': 'pontos.png'
+            'pontos': 'pontos.png',
+            'windows': 'windows.png',
+            'linux': 'linux.png'
         }
         
         for key, filename in icon_files.items():
@@ -294,213 +316,21 @@ class QuarkDriveGUI:
                             dpg.add_image(self.icons['info'], width=16, height=16)
                             about_btn = dpg.add_button(label="Sobre o QuarkDrive", callback=self._show_about, width=180, height=35)
                         dpg.bind_item_theme(about_btn, self.highlight_theme)
-    
-    def _update_status_icon(self, status_type):
-        """Atualizar ícone do status"""
-        # Limpar grupo de status
-        dpg.delete_item("status_group", children_only=True)
-        
-        # Adicionar novo ícone baseado no status
-        if status_type == "mounting":
-            dpg.add_image(self.icons['pontos'], width=16, height=16, parent="status_group")
-            dpg.add_text("Montando...", tag="status_text", color=(255, 255, 100, 255), parent="status_group")
-        elif status_type == "mounted":
-            dpg.add_image(self.icons['play'], width=16, height=16, parent="status_group")
-            dpg.add_text("Montado com Sucesso", tag="status_text", color=(100, 255, 100, 255), parent="status_group")
-        elif status_type == "unmounting":
-            dpg.add_image(self.icons['pontos'], width=16, height=16, parent="status_group")
-            dpg.add_text("Desmontando...", tag="status_text", color=(255, 255, 100, 255), parent="status_group")
-        else:  # unmounted or error
-            dpg.add_image(self.icons['parar'], width=16, height=16, parent="status_group")
-            dpg.add_text("Desmontado", tag="status_text", color=(255, 100, 100, 255), parent="status_group")
-    
-    def _start_mount(self):
-        """Iniciar montagem do sistema de arquivos"""
-        try:
-            mount_point = dpg.get_value("mount_point_combo") if os.name == 'nt' else dpg.get_value("mount_point_input")
-            if not mount_point:
-                self._append_log("[ERROR] Ponto de montagem não especificado")
-                return
             
-            self._update_status_icon("mounting")
-            
-            # Configurações
-            enable_dedup = dpg.get_value("enable_dedup")
-            enable_compression = dpg.get_value("enable_compression")
-            enable_cache = dpg.get_value("enable_cache")
-            
-            # Iniciar montagem em thread separada
-            mount_thread = threading.Thread(
-                target=self._mount_worker,
-                args=(mount_point, enable_dedup, enable_compression, enable_cache)
-            )
-            mount_thread.daemon = True
-            mount_thread.start()
-            
-        except Exception as e:
-            self._append_log(f"[ERROR] Erro ao iniciar montagem: {e}")
-    
-    def _mount_worker(self, mount_point, enable_dedup, enable_compression, enable_cache):
-        """Worker para montagem em thread separada"""
-        try:
-            # Simular montagem
-            time.sleep(2)
-            
-            self._update_status_icon("mounted")
-            self.is_mounted = True
-            self._append_log(f"[SUCCESS] Sistema montado em {mount_point}")
-            
-            # Habilitar/desabilitar botões
-            dpg.configure_item("mount_btn", enabled=False)
-            dpg.configure_item("unmount_btn", enabled=True)
-            
-        except Exception as e:
-            self._update_status_icon("error")
-            self.is_mounted = False
-            self._append_log(f"[ERROR] Erro ao montar: {e}")
-    
-    def _stop_mount(self):
-        """Parar montagem do sistema de arquivos"""
-        try:
-            if not self.is_mounted:
-                self._append_log("[WARNING] Sistema não está montado")
-                return
-            
-            self._update_status_icon("unmounting")
-            
-            # Desmontar em thread separada
-            unmount_thread = threading.Thread(target=self._unmount_worker)
-            unmount_thread.daemon = True
-            unmount_thread.start()
-            
-        except Exception as e:
-            self._append_log(f"[ERROR] Erro ao desmontar: {e}")
-    
-    def _unmount_worker(self):
-        """Worker para desmontagem em thread separada"""
-        try:
-            # Simular desmontagem
-            time.sleep(1)
-            
-            self._update_status_icon("unmounted")
-            self.is_mounted = False
-            self._append_log("[SUCCESS] Sistema desmontado com sucesso")
-            
-            # Habilitar/desabilitar botões
-            dpg.configure_item("mount_btn", enabled=True)
-            dpg.configure_item("unmount_btn", enabled=False)
-            
-        except Exception as e:
-            self._append_log(f"[ERROR] Erro ao desmontar: {e}")
-    
-    def _force_update_stats(self):
-        """Forçar atualização das estatísticas"""
-        try:
-            # Simular atualização de estatísticas
-            dpg.set_value("space_saved", "150 MB")
-            dpg.set_value("duplicate_files", "42")
-            dpg.set_value("compression_ratio", "65%")
-            dpg.set_value("cache_usage", "23%")
-            
-            self._append_log("[SUCCESS] Estatísticas atualizadas")
-            
-        except Exception as e:
-            self._append_log(f"[ERROR] Erro ao atualizar estatísticas: {str(e)}")
-    
-    def _run_tests(self):
-        """Executar testes do sistema"""
-        try:
-            self._append_log("[INFO] Iniciando testes do sistema...")
-            
-            # Simular execução de testes
-            import subprocess
-            result = subprocess.run(["python", "-m", "pytest", "tests/"], 
-                                  capture_output=True, text=True, cwd=Path(__file__).parent.parent)
-            
-            if result.returncode == 0:
-                self._append_log("[SUCCESS] Todos os testes passaram!")
-            else:
-                self._append_log(f"[WARNING] Alguns testes falharam. Código: {result.returncode}")
-                
-            # Adicionar output dos testes aos logs
-            if result.stdout:
-                self._append_log(f"[OUTPUT] {result.stdout}")
-                
-        except Exception as e:
-            self._append_log(f"[ERROR] Erro ao executar testes: {str(e)}")
-    
-    def _show_about(self):
-        """Mostrar janela sobre o QuarkDrive"""
-        def close_about():
-            dpg.delete_item("about_window")
-        
-        if dpg.does_item_exist("about_window"):
-            return
-        
-        with dpg.window(label="Sobre o QuarkDrive", tag="about_window", width=500, height=400, 
-                       pos=(200, 150), modal=True, no_resize=True):
-            
-            with dpg.group(horizontal=True):
-                dpg.add_image(self.icons['foguete'], width=32, height=32)
-                dpg.add_text("QuarkDrive v1.0", color=(100, 200, 255, 255))
-            
-            dpg.add_spacer(height=15)
-            dpg.add_text("Sistema de Armazenamento Otimizado", color=(180, 180, 180, 255))
+            # Footer com informações do sistema operacional
             dpg.add_spacer(height=20)
-            
-            dpg.add_text("Recursos:", color=(150, 200, 255, 255))
-            
-            # Usar ícones como imagens em vez de texto
-            with dpg.group(horizontal=True):
-                dpg.add_image(self.icons['deduplicar'], width=16, height=16)
-                dpg.add_text("Deduplicação inteligente de arquivos")
+            dpg.add_separator()
+            dpg.add_spacer(height=10)
             
             with dpg.group(horizontal=True):
-                dpg.add_image(self.icons['comprimir'], width=16, height=16)
-                dpg.add_text("Compressão avançada com ZSTD")
-            
-            with dpg.group(horizontal=True):
-                dpg.add_image(self.icons['cache'], width=16, height=16)
-                dpg.add_text("Extensões C++ para máxima performance")
-            
-            with dpg.group(horizontal=True):
-                dpg.add_image(self.icons['disco'], width=16, height=16)
-                dpg.add_text("Cache híbrido RAM + SSD")
-            
-            with dpg.group(horizontal=True):
-                dpg.add_image(self.icons['pasta'], width=16, height=16)
-                dpg.add_text("Sistema de arquivos virtual")
-            
-            dpg.add_spacer(height=20)
-            
-            dpg.add_text("Tecnologias:", color=(150, 200, 255, 255))
-            dpg.add_text("Python 3.12+, Dear PyGui, ZSTD, C++ Extensions")
-            
-            dpg.add_spacer(height=20)
-            
-            with dpg.group(horizontal=True):
-                dpg.add_spacer(width=150)
-                close_btn = dpg.add_button(label="Fechar", callback=close_about, width=100, height=35)
-                dpg.bind_item_theme(close_btn, self.success_theme)
-
-    def run(self):
-        """Executar a aplicação"""
-        dpg.create_viewport(title="QuarkDrive - Sistema de Armazenamento Otimizado", 
-                          width=900, height=800, resizable=True)
-        dpg.setup_dearpygui()
-        dpg.show_viewport()
-        dpg.set_primary_window("main_window", True)
-        
-        # Loop principal
-        while dpg.is_dearpygui_running():
-            dpg.render_dearpygui_frame()
-        
-        # Cleanup
-        self.running = False
-        if hasattr(self, 'is_mounted') and self.is_mounted:
-            self._stop_mount()
-        
-        dpg.destroy_context()
+                # Usar ícone específico para o sistema operacional
+                if platform.system() == 'Windows':
+                    dpg.add_image(self.icons['windows'], width=16, height=16)
+                elif platform.system() == 'Linux':
+                    dpg.add_image(self.icons['linux'], width=16, height=16)
+                else:
+                    dp.add_image(self.icons['info'], width=16, height=16)
+                dpg.add_text(f"Sistema: {self.os_info}", color=(150, 150, 150, 255))
 
     def _browse_mount_point(self):
         """Abrir diálogo para selecionar ponto de montagem"""
@@ -508,128 +338,322 @@ class QuarkDriveGUI:
             import tkinter as tk
             from tkinter import filedialog
             
-            # Criar janela temporária (oculta) para o diálogo
-            root = tk.Tk()
-            root.withdraw()  # Ocultar a janela principal
-            
-            if os.name == 'nt':  # Windows
-                # No Windows, permitir selecionar uma pasta
-                folder_path = filedialog.askdirectory(
-                    title="Selecionar pasta para montagem",
-                    initialdir="C:\\"
-                )
-                if folder_path:
-                    # Atualizar o combo com o caminho selecionado
-                    if dpg.does_item_exist("mount_point_combo"):
-                        current_items = dpg.get_item_configuration("mount_point_combo")["items"]
-                        if folder_path not in current_items:
-                            current_items.append(folder_path)
-                            dpg.configure_item("mount_point_combo", items=current_items)
-                        dpg.set_value("mount_point_combo", folder_path)
-            else:  # Unix/Linux
-                # No Unix/Linux, permitir selecionar uma pasta
-                folder_path = filedialog.askdirectory(
-                    title="Selecionar pasta para montagem",
-                    initialdir="/mnt"
-                )
-                if folder_path:
-                    # Atualizar o campo de texto
-                    if dpg.does_item_exist("mount_point_input"):
-                        dpg.set_value("mount_point_input", folder_path)
-            
-            root.destroy()  # Destruir a janela temporária
-            
-        except ImportError:
-            self._append_log("[WARNING] tkinter não disponível. Instale python-tk para usar o navegador de arquivos.")
-        except Exception as e:
-            self._append_log(f"[ERROR] Erro ao abrir navegador de arquivos: {str(e)}")
-
-    def _append_log(self, message):
-        """Adicionar mensagem ao log"""
-        try:
-            import datetime
-            timestamp = datetime.datetime.now().strftime("%H:%M:%S")
-            log_message = f"[{timestamp}] {message}"
-            
-            # Adicionar ao log text area se existir
-            if dpg.does_item_exist("log_text"):
-                current_text = dpg.get_value("log_text")
-                new_text = current_text + "\n" + log_message if current_text else log_message
-                dpg.set_value("log_text", new_text)
-                
-                # Remover auto-scroll que está causando erro
-                # dpg.set_y_scroll("log_text", -1.0)
-        except Exception as e:
-            print(f"Erro ao adicionar log: {e}")
-    
-    def _clear_logs(self):
-        """Limpar todos os logs"""
-        try:
-            if dpg.does_item_exist("log_text"):
-                dpg.set_value("log_text", "")
-            self._append_log("[INFO] Logs limpos")
-        except Exception as e:
-            print(f"Erro ao limpar logs: {e}")
-    
-    def _save_logs(self):
-        """Salvar logs em arquivo"""
-        try:
-            import tkinter as tk
-            from tkinter import filedialog
-            import datetime
-            
-            # Criar janela temporária para o diálogo
+            # Criar janela temporária do tkinter e escondê-la
             root = tk.Tk()
             root.withdraw()
             
-            # Obter timestamp para nome do arquivo
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            default_filename = f"quarkdrive_logs_{timestamp}.txt"
+            # Abrir diálogo para selecionar pasta
+            folder_path = filedialog.askdirectory(title="Selecione o ponto de montagem")
+            
+            if folder_path:
+                if os.name == 'nt':  # Windows
+                    # No Windows, apenas atualizamos o valor do combo
+                    dpg.set_value("mount_point_combo", folder_path)
+                else:  # Unix/Linux
+                    dpg.set_value("mount_point_input", folder_path)
+                
+                self._append_log(f"[INFO] Ponto de montagem selecionado: {folder_path}")
+            
+            # Destruir a janela tkinter
+            root.destroy()
+            
+        except Exception as e:
+            self._append_log(f"[ERRO] Falha ao abrir diálogo: {str(e)}")
+
+    def _stop_mount(self):
+        """Desmontar o sistema de arquivos"""
+        try:
+            if not self.mount_process:
+                self._append_log("[AVISO] Sistema de arquivos não está montado")
+                return
+            
+            self._update_status_icon("unmounting")
+            
+            # Iniciar thread de desmontagem
+            unmount_thread = threading.Thread(target=self._unmount_worker)
+            unmount_thread.daemon = True
+            unmount_thread.start()
+            
+            self._append_log("[INFO] Desmontando sistema de arquivos...")
+            
+        except Exception as e:
+            self._update_status_icon("unmounted")
+            self._append_log(f"[ERRO] Falha ao desmontar: {str(e)}")
+    
+    def _unmount_worker(self):
+        """Thread worker para desmontagem do sistema de arquivos"""
+        try:
+            # Desmontar o sistema de arquivos
+            unmount_filesystem(self.mount_process)
+            self.mount_process = None
+            
+            # Atualizar status
+            self._update_status_icon("unmounted")
+            self._append_log("[INFO] Sistema de arquivos desmontado com sucesso")
+            
+            # Habilitar botão de montar e desabilitar botão de desmontar
+            dpg.configure_item("mount_btn", enabled=True)
+            dpg.configure_item("unmount_btn", enabled=False)
+            
+        except Exception as e:
+            self._append_log(f"[ERRO] Falha na thread de desmontagem: {str(e)}")
+    
+    def _start_mount(self):
+        """Montar o sistema de arquivos"""
+        try:
+            # Verificar se já está montado
+            if self.mount_process:
+                self._append_log("[AVISO] Sistema de arquivos já está montado")
+                return
+            
+            # Obter ponto de montagem
+            if os.name == 'nt':  # Windows
+                mount_point = dpg.get_value("mount_point_combo")
+            else:  # Unix/Linux
+                mount_point = dpg.get_value("mount_point_input")
+            
+            if not mount_point:
+                self._append_log("[ERRO] Selecione um ponto de montagem válido")
+                return
+            
+            # Atualizar status
+            self._update_status_icon("mounting")
+            
+            # Iniciar thread de montagem
+            mount_thread = threading.Thread(target=self._mount_worker, args=(mount_point,))
+            mount_thread.daemon = True
+            mount_thread.start()
+            
+            self._append_log(f"[INFO] Iniciando montagem em {mount_point}...")
+        
+        except Exception as e:
+            self._append_log(f"[ERRO] Falha ao iniciar montagem: {str(e)}")
+    
+    def _mount_worker(self, mount_point):
+        """Thread worker para montagem do sistema de arquivos"""
+        try:
+            # Montar o sistema de arquivos usando a implementação padrão
+            # que já possui os callbacks corretos
+            self.mount_process = mount_filesystem(
+                mount_point=mount_point,
+                dedup=True,
+                compress=True,
+                cache=True
+            )
+            
+            if self.mount_process:
+                # Atualizar status
+                self._update_status_icon("mounted")
+                self._append_log(f"[INFO] Sistema de arquivos montado com sucesso em {mount_point}")
+                
+                # Habilitar botão de desmontar e desabilitar botão de montar
+                dpg.configure_item("mount_btn", enabled=False)
+                dpg.configure_item("unmount_btn", enabled=True)
+            else:
+                self._update_status_icon("unmounted")
+                self._append_log("[ERRO] Falha ao montar sistema de arquivos")
+        
+        except Exception as e:
+            self._update_status_icon("unmounted")
+            self._append_log(f"[ERRO] Falha na thread de montagem: {str(e)}")
+    
+    def run(self):
+        """Executar a interface gráfica"""
+        # Configurar viewport
+        dpg.create_viewport(title="QuarkDrive", width=900, height=800, resizable=True)
+        dpg.setup_dearpygui()
+        dpg.show_viewport()
+        
+        # Configurar janela principal
+        dpg.set_primary_window("main_window", True)
+        
+        # Loop principal
+        while dpg.is_dearpygui_running() and self.running:
+            dpg.render_dearpygui_frame()
+            time.sleep(0.01)
+        
+        # Limpar recursos
+        dpg.destroy_context()
+
+    def _force_update_stats(self):
+            """Força a atualização das estatísticas na interface"""
+            try:
+                # Obter estatísticas atualizadas do gerenciador
+                stats = self.manager.stats
+                
+                # Atualizar elementos da interface
+                dpg.set_value("space_saved", f"{stats.space_saved_mb:.2f} MB")
+                dpg.set_value("duplicate_files", str(stats.duplicated_files_count))
+                dpg.set_value("compression_ratio", f"{stats.compression_ratio:.1f}%")
+                dpg.set_value("cache_usage", f"{stats.cache_usage_percent:.1f}%")
+                
+                # Registrar no log
+                self._append_log("[INFO] Estatísticas atualizadas com sucesso")
+                
+            except Exception as e:
+                self._append_log(f"[ERRO] Falha ao atualizar estatísticas: {str(e)}")
+
+    def _append_log(self, message):
+        """Adiciona uma mensagem ao log"""
+        try:
+            # Obter o texto atual
+            current_log = dpg.get_value("log_text")
+            
+            # Adicionar nova mensagem com timestamp
+            timestamp = time.strftime("%H:%M:%S", time.localtime())
+            new_log = f"{current_log}[{timestamp}] {message}\n"
+            
+            # Atualizar o texto do log
+            dpg.set_value("log_text", new_log)
+            
+            # Auto-scroll para o final
+            # Nota: DearPyGui não tem scroll automático nativo, então isso é uma aproximação
+            try:
+                dpg.set_y_scroll("log_text", -1.0)
+            except Exception:
+                # Ignora erro de scroll - pode ocorrer quando não há scroll disponível
+                pass
+            
+        except Exception as e:
+            print(f"Erro ao adicionar log: {str(e)}")
+    
+    def _clear_logs(self):
+        """Limpa o conteúdo da área de logs"""
+        try:
+            # Limpar o texto do log, mantendo apenas a mensagem inicial
+            dpg.set_value("log_text", "[INFO] Log limpo\n")
+            
+        except Exception as e:
+            print(f"Erro ao limpar logs: {str(e)}")
+    
+    def _save_logs(self):
+        """Salva o conteúdo dos logs em um arquivo"""
+        try:
+            import tkinter as tk
+            from tkinter import filedialog
+            
+            # Criar janela temporária do tkinter e escondê-la
+            root = tk.Tk()
+            root.withdraw()
+            
+            # Obter o texto atual do log
+            log_content = dpg.get_value("log_text")
             
             # Abrir diálogo para salvar arquivo
             file_path = filedialog.asksaveasfilename(
-                title="Salvar logs",
+                title="Salvar Logs",
                 defaultextension=".txt",
-                filetypes=[("Arquivos de texto", "*.txt"), ("Todos os arquivos", "*.*")],
-                initialname=default_filename
+                filetypes=[("Arquivos de Texto", "*.txt"), ("Todos os Arquivos", "*.*")]
             )
             
             if file_path:
-                # Obter conteúdo dos logs
-                if dpg.does_item_exist("log_text"):
-                    log_content = dpg.get_value("log_text")
-                    
-                    # Salvar no arquivo
-                    with open(file_path, 'w', encoding='utf-8') as f:
-                        f.write(f"QuarkDrive - Logs do Sistema\n")
-                        f.write(f"Gerado em: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
-                        f.write("=" * 50 + "\n\n")
-                        f.write(log_content)
-                    
-                    self._append_log(f"[SUCCESS] Logs salvos em: {file_path}")
-                else:
-                    self._append_log("[WARNING] Nenhum log encontrado para salvar")
+                # Salvar o conteúdo em um arquivo
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(log_content)
+                
+                self._append_log(f"[INFO] Logs salvos em: {file_path}")
             
+            # Destruir a janela tkinter
             root.destroy()
             
-        except ImportError:
-            self._append_log("[WARNING] tkinter não disponível. Não é possível salvar logs.")
         except Exception as e:
-            self._append_log(f"[ERROR] Erro ao salvar logs: {str(e)}")
+            self._append_log(f"[ERRO] Falha ao salvar logs: {str(e)}")
+
+    def _run_tests(self):
+        """Executa os testes do sistema"""
+        try:
+            self._append_log("[INFO] Iniciando execução de testes...")
+            
+            # Criar thread para executar os testes para não bloquear a interface
+            test_thread = threading.Thread(target=self._test_worker)
+            test_thread.daemon = True
+            test_thread.start()
+            
+        except Exception as e:
+            self._append_log(f"[ERRO] Falha ao iniciar testes: {str(e)}")
+        
+        def _test_worker(self):
+            """Thread worker para execução de testes"""
+            try:
+                import subprocess
+                
+                # Executar todos os testes
+                self._append_log("[INFO] Executando testes do sistema...")
+                result = subprocess.run(
+                    [sys.executable, '-m', 'pytest', 'tests/', '-v'], 
+                    capture_output=True,
+                    text=True
+                )
+                
+                # Registrar saída dos testes no log
+                if result.returncode == 0:
+                    self._append_log("[INFO] Testes concluídos com sucesso!")
+                else:
+                    self._append_log("[AVISO] Alguns testes falharam.")
+                
+                # Adicionar detalhes da saída dos testes ao log
+                output_lines = result.stdout.split('\n')
+                for line in output_lines[:20]:  # Limitar a quantidade de linhas para não sobrecarregar o log
+                    if line.strip():
+                        self._append_log(f"[TESTE] {line.strip()}")
+                
+                if len(output_lines) > 20:
+                    self._append_log(f"[INFO] ... e mais {len(output_lines) - 20} linhas de saída")
+                
+            except FileNotFoundError:
+                self._append_log("[ERRO] pytest não encontrado. Instale com: pip install pytest")
+            except Exception as e:
+                self._append_log(f"[ERRO] Falha na execução dos testes: {str(e)}")
+                
+    def _show_about(self):
+        """Exibe informações sobre o QuarkDrive"""
+        try:
+            # Criar janela de informações
+            with dpg.window(label="Sobre o QuarkDrive", width=400, height=300, modal=True, pos=(100, 100)):
+                dpg.add_text("QuarkDrive - Sistema de Arquivos Inteligente")
+                dpg.add_separator()
+                dpg.add_spacer(height=10)
+                dpg.add_text("Desenvolvido como projeto de demonstração")
+                dpg.add_text("Versão: 1.0.0")
+                dpg.add_spacer(height=10)
+                dpg.add_text("Recursos:")
+                dpg.add_text("- Compressão de dados")
+                dpg.add_text("- Deduplicação de arquivos")
+                dpg.add_text("- Cache híbrido (RAM + SSD)")
+                dpg.add_text("- Montagem como sistema de arquivos")
+                dpg.add_spacer(height=20)
+                dpg.add_button(label="Fechar", callback=lambda: dpg.delete_item(dpg.last_container()))
+                
+        except Exception as e:
+            self._append_log(f"[ERRO] Falha ao exibir informações: {str(e)}")
+
+    def _update_status_icon(self, status):
+        """Atualizar o ícone e texto de status na interface"""
+        try:
+            # Remover ícone atual
+            dpg.delete_item("status_group", children_only=True)
+            
+            # Adicionar novo ícone e texto baseado no status
+            with dpg.group(horizontal=True, parent="status_group", tag="status_group_content"):
+                if status == "mounted":
+                    dpg.add_image(self.icons['foguete'], width=16, height=16)
+                    dpg.add_text("Montado", tag="status_text", color=(100, 255, 100, 255))
+                elif status == "mounting":
+                    dpg.add_image(self.icons['atualizar'], width=16, height=16)
+                    dpg.add_text("Montando...", tag="status_text", color=(255, 200, 100, 255))
+                elif status == "unmounting":
+                    dpg.add_image(self.icons['atualizar'], width=16, height=16)
+                    dpg.add_text("Desmontando...", tag="status_text", color=(255, 200, 100, 255))
+                else:  # "unmounted" ou qualquer outro estado
+                    dpg.add_image(self.icons['parar'], width=16, height=16)
+                    dpg.add_text("Desmontado", tag="status_text", color=(255, 100, 100, 255))
+        except Exception as e:
+            print(f"Erro ao atualizar ícone de status: {str(e)}")
 
 def main():
-    """Função principal para executar a GUI"""
-    try:
-        app = QuarkDriveGUI()
-        app.run()
-    except Exception as e:
-        print(f"Erro ao iniciar QuarkDrive: {e}")
-        sys.exit(1)
+    """Função principal para iniciar a GUI"""
+    app = QuarkDriveGUI()
+    app.run()
 
 if __name__ == "__main__":
     main()
-
-
-    
-
-    

@@ -17,8 +17,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 # Adicionar pasta lib ao path de importação para módulos C++
 if platform.system() == "Windows":
     lib_path = str(Path(__file__).parent / "lib")
+    # Adicionar site-packages ao sys.path para encontrar os módulos .pyd
+    site_packages_path = str(Path(__file__).parent / "lib" / "site-packages")
+    sys.path.insert(0, site_packages_path)
+    
     os.add_dll_directory(lib_path)
-    os.add_dll_directory("C:/msys64/mingw64/bin")
+    # Linha do mingw removida
     # Também adicionar ao PATH do sistema para garantia
     os.environ['PATH'] = lib_path + os.pathsep + os.environ.get('PATH', '')
 
