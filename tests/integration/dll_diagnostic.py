@@ -35,7 +35,7 @@ original_path = os.environ.get('PATH', '')
 os.environ['PATH'] = lib_path + ';' + original_path
 sys.path.insert(0, lib_path)
 
-modules = ['compression_module', 'hash_module', 'windows_vfs_module']
+modules = ['compression_module', 'hash_module', 'winfuse']
 
 for module_name in modules:
     print(f"\nTestando {module_name}...")

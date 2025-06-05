@@ -24,7 +24,7 @@ def build_extensions(python_exe, log_file):
             stderr=subprocess.PIPE,
             text=True,
             encoding='utf-8',  # tenta utf-8
-            errors='replace'    # substitui caracteres inválidos
+            errors='replace'    # substitui caracteres invï¿½lidos
         )
 
         with log_file.open('w', encoding='utf-8', errors='replace') as f:
@@ -51,8 +51,9 @@ def build_extensions(python_exe, log_file):
 
 def move_compiled_modules(output):
     ext = '.pyd'
-    lib_dir = Path("lib")
-    lib_dir.mkdir(exist_ok=True)
+    # Criar pasta site-packages dentro de lib
+    site_packages_dir = Path("lib") / "site-packages"
+    site_packages_dir.mkdir(parents=True, exist_ok=True)
 
     matches = list(Path('.').glob(f"*{ext}"))
 
@@ -66,7 +67,8 @@ def move_compiled_modules(output):
         name_parts = source.stem.split('.')
         module_name = name_parts[0] if name_parts else source.stem
 
-        target = lib_dir / f"{module_name}{ext}"
+        # Mover para site-packages em vez de lib diretamente
+        target = site_packages_dir / f"{module_name}{ext}"
 
         if target.exists():
             target.unlink()

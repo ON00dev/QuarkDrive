@@ -12,7 +12,7 @@ sys.path.insert(0, str(lib_path))
 print(f"Lib path adicionado: {lib_path.absolute()}")
 
 # Verificar se os arquivos existem
-modules = ['compression_module.pyd', 'hash_module.pyd', 'windows_vfs_module.pyd']
+modules = ['compression_module.pyd', 'hash_module.pyd', 'winfuse.pyd']
 for module_file in modules:
     file_path = lib_path / module_file
     print(f"{module_file}: {'EXISTS' if file_path.exists() else 'NOT FOUND'}")

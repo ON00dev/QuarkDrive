@@ -33,16 +33,27 @@ QuarkDrive is an advanced storage solution that combines intelligent deduplicati
 
 ### 🚀 Quick Installation
 
+1. Clone the repository
 ```bash
-# Clone the repository
 git clone https://github.com/ON00dev/QuarkDrive.git
 cd QuarkDrive
-
-# Install dependencies
+```
+2. Install dependencies
+```bash
 pip install -r requirements.txt
+```
+3. Install vcpkg
+[click here](https://github.com/ON00dev/QuarkDrive/GUIDE.md)
 
-# Compile C++ extensions (optional but recommended)
+4. Copy libraries and headers to the project directory
+```bash
+python copy_all_dlls.py
+```
+5. Compile C++ extensions
+```bash
 python compile_extensions.py
-
-# Run the application
+```
+6. Run the application
+```bash
 python main.py gui
+```

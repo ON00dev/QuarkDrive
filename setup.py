@@ -10,13 +10,15 @@ class BuildExt(build_ext):
         opts = ['/EHsc', '/std:c++17'] if ct == 'msvc' else ['-std=c++17']
         
         if ct == 'msvc':
-            static_flags = ['/MT']
+            # /MT deve ir para extra_compile_args, não extra_link_args
+            opts.extend(['/MT'])
+            link_flags = []
         else:
-            static_flags = ['-static-libgcc', '-static-libstdc++']
+            link_flags = ['-static-libgcc', '-static-libstdc++']
 
         for ext in self.extensions:
             ext.extra_compile_args = opts
-            ext.extra_link_args = static_flags
+            ext.extra_link_args = link_flags
 
         build_ext.build_extensions(self)
 
@@ -32,14 +34,14 @@ library_dirs = [
 
 # Configurações específicas para Windows
 if platform.system() == "Windows":
-    # Bibliotecas para compressão (nomes sem prefixo 'lib')
+    # Bibliotecas para compressão
     compression_libs = ["zstd", "bz2", "lzma", "lz4", "brotlicommon", "brotlidec", "brotlienc"]
     
-    # Bibliotecas para hash (OpenSSL pode ter nomes diferentes)
-    hash_libs = ["xxhash"]
+    # Bibliotecas para hash (incluindo OpenSSL)
+    hash_libs = ["xxhash", "libcrypto", "libssl"]
     
-    # Bibliotecas do sistema Windows para VFS
-    vfs_libs = ["kernel32", "user32", "shlwapi", "advapi32"]
+    # Bibliotecas para VFS (incluindo Dokan) - nomes corretos das bibliotecas
+    vfs_libs = ["kernel32", "user32", "shlwapi", "advapi32", "dokan2", "dokanfuse2"]
     
     # Macros para ZSTD estático
     define_macros = [('ZSTD_STATIC_LINKING_ONLY', None)]
@@ -75,8 +77,8 @@ extensions = [
 if platform.system() == "Windows":
     extensions.append(
         Extension(
-            "windows_vfs_module",
-            ["extensions/windows_vfs_module.cpp"],
+            "winfuse",  # Nome correto do módulo
+            ["extensions/winfuse.cpp"],
             include_dirs=include_dirs,
             libraries=vfs_libs,
             library_dirs=library_dirs,

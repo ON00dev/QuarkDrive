@@ -8,10 +8,10 @@ from concurrent.futures import ThreadPoolExecutor
 
 if platform.system() == 'Windows':
     try:
-        import windows_vfs_module
+        import winfuse
     except ImportError:
-        print("ERRO: windows_vfs_module não compilado!")
-        windows_vfs_module = None
+        print("ERRO: winfuse não compilado!")
+        winfuse = None
 
 class ThreadSafeWindowsVFS:
     def __init__(self, backend_path: str):
@@ -79,8 +79,8 @@ class ThreadSafeWindowsVFS:
     
     def mount(self, drive_letter: str) -> bool:
         """Monta a unidade virtual com proteção thread-safe"""
-        if not windows_vfs_module:
-            raise RuntimeError("Módulo windows_vfs_module não disponível")
+        if not winfuse:
+            raise RuntimeError("Módulo winfuse não disponível")
             
         if self.is_mounted:
             return False
@@ -88,10 +88,10 @@ class ThreadSafeWindowsVFS:
         drive = drive_letter.upper().rstrip(':')
         
         try:
-            success = windows_vfs_module.mount_drive(drive + ":", self.backend_path)
+            success = winfuse.mount_drive(drive + ":", self.backend_path)
             
             if success and self.vfs_callbacks:
-                windows_vfs_module.set_callbacks(
+                winfuse.set_callbacks(
                     drive + ":",
                     self.vfs_callbacks.get('read'),
                     self.vfs_callbacks.get('write'),
@@ -119,7 +119,7 @@ class ThreadSafeWindowsVFS:
             return False
             
         try:
-            success = windows_vfs_module.unmount_drive(self.mount_point)
+            success = winfuse.unmount_drive(self.mount_point)
             
             if success:
                 print(f"[✓] Unidade {self.mount_point} desmontada com segurança!")
@@ -167,8 +167,8 @@ class WindowsVFSMount:
         if platform.system() != 'Windows':
             raise RuntimeError("WindowsVFSMount só funciona no Windows")
             
-        if not windows_vfs_module:
-            raise RuntimeError("Módulo windows_vfs_module não disponível")
+        if not winfuse:
+            raise RuntimeError("Módulo winfuse não disponível")
             
         if self.is_mounted:
             return False
@@ -178,11 +178,11 @@ class WindowsVFSMount:
         
         try:
             # Montar usando o módulo C++
-            success = windows_vfs_module.mount_drive(drive + ":", self.backend_path)
+            success = winfuse.mount_drive(drive + ":", self.backend_path)
             
             if success and self.vfs_callbacks:
                 # Configurar callbacks
-                windows_vfs_module.set_callbacks(
+                winfuse.set_callbacks(
                     drive + ":",
                     self.vfs_callbacks.get('read'),
                     self.vfs_callbacks.get('write'),
@@ -210,7 +210,7 @@ class WindowsVFSMount:
             return False
             
         try:
-            success = windows_vfs_module.unmount_drive(self.mount_point)
+            success = winfuse.unmount_drive(self.mount_point)
             
             if success:
                 print(f"[✓] Unidade {self.mount_point} desmontada com sucesso!")
@@ -227,9 +227,9 @@ class WindowsVFSMount:
     
     def get_mounted_drives(self) -> list:
         """Retorna lista de unidades montadas"""
-        if not windows_vfs_module:
+        if not winfuse:
             return []
-        return windows_vfs_module.get_mounted_drives()
+        return winfuse.get_mounted_drives()
     
     def is_active(self) -> bool:
         """Verifica se a montagem está ativa"""

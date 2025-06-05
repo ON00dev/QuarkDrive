@@ -24,10 +24,10 @@ except Exception as e:
     print(f"✗ hash_module FALHOU: {e}")
 
 try:
-    print("Importando windows_vfs_module...")
-    import windows_vfs_module
-    print("✓ windows_vfs_module OK")
+    print("Importando winfuse...")
+    import winfuse
+    print("✓ winfuse OK")
 except Exception as e:
-    print(f"✗ windows_vfs_module FALHOU: {e}")
+    print(f"✗ winfuse FALHOU: {e}")
 
 print("Teste concluído!")

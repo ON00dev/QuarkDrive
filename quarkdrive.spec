@@ -4,13 +4,13 @@ a = Analysis(
     binaries=[],
     datas=[
         ('extensions/*.pyd', 'extensions/'),
-        ('lib/*.pyd', 'lib/'),  # Incluir o novo módulo
+        ('lib/*.pyd', 'lib/'),
         ('gui/icons/*', 'gui/icons/'),
     ],
     hiddenimports=[
         'extensions.compression_module', 
         'extensions.hash_module',
-        'windows_vfs_module',  # Novo módulo
+        'winfuse',
         'platform'
     ],
     hookspath=[],

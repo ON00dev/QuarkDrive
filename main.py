@@ -212,7 +212,7 @@ def check_cpp_extensions():
         import compression_module
         import hash_module
         if platform.system() == "Windows":
-            import windows_vfs_module
+            import winfuse
         return True
     except ImportError as e:
         print(f"[x] Erro ao carregar extensão C++: {e}")

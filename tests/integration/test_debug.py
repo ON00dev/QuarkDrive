@@ -12,14 +12,14 @@ sys.path.insert(0, lib_path)
 
 # Verifica se os arquivos .pyd existem
 print("\n=== Verificando arquivos .pyd ===")
-for module_name in ['compression_module', 'hash_module', 'windows_vfs_module']:
+for module_name in ['compression_module', 'hash_module', 'winfuse']:
     pyd_file = os.path.join(lib_path, f"{module_name}.pyd")
     exists = os.path.exists(pyd_file)
     print(f"{module_name}.pyd: {'✓ Existe' if exists else '✗ Não encontrado'}")
 
 # Testa cada módulo individualmente
 print("\n=== Testando importações ===")
-modules = ['compression_module', 'hash_module', 'windows_vfs_module']
+modules = ['compression_module', 'hash_module', 'winfuse']
 
 for module_name in modules:
     print(f"\nTestando {module_name}...")

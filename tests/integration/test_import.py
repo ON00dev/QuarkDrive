@@ -22,7 +22,7 @@ except Exception as e:
     print(f"✗ hash_module: {e}")
 
 try:
-    import windows_vfs_module
-    print("✓ windows_vfs_module: OK")
+    import winfuse
+    print("✓ winfuse: OK")
 except Exception as e:
-    print(f"✗ windows_vfs_module: {e}")
+    print(f"✗ winfuse: {e}")
