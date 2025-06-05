@@ -1,3 +1,4 @@
+from nt import read
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from pybind11 import get_include
@@ -88,7 +89,7 @@ if platform.system() == "Windows":
 
 setup(
     name="QuarkDrive",
-    version="1.0.0",
+    version=open("VERSION", "r").read().strip(),
     ext_modules=extensions,
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
