@@ -7,7 +7,7 @@ print(f"Python version: {sys.version}")
 print(f"Current directory: {os.getcwd()}")
 
 # Adicionar pasta lib ao path
-lib_path = Path("lib")
+lib_path = Path("lib/site-packages")
 sys.path.insert(0, str(lib_path))
 print(f"Lib path adicionado: {lib_path.absolute()}")
 

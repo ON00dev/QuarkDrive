@@ -34,6 +34,38 @@ Finalizada a gera��o de c�digo
 building 'winfuse' extension
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\cl.exe" /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\Repo\QuarkDrive\venv\Lib\site-packages\pybind11\include -I./include -IC:\Repo\QuarkDrive\venv\include -IC:\Users\Ronilda\AppData\Local\Programs\Python\Python312\include -IC:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Include "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include" "-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include" "-IC:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt" "-IC:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt" /EHsc /Tpextensions/winfuse.cpp /Fobuild\temp.win-amd64-cpython-312\Release\extensions\winfuse.obj /EHsc /std:c++17 /MT
 winfuse.cpp
+extensions/winfuse.cpp(140): warning C4101: 'e': vari�vel local n�o referenciada
+extensions/winfuse.cpp(175): warning C4018: '>=': incompatibilidade de signed/unsigned
+extensions/winfuse.cpp(189): warning C4101: 'e': vari�vel local n�o referenciada
+extensions/winfuse.cpp(226): warning C4101: 'e': vari�vel local n�o referenciada
+extensions/winfuse.cpp(282): warning C4101: 'e': vari�vel local n�o referenciada
+extensions/winfuse.cpp(330): warning C4101: 'e': vari�vel local n�o referenciada
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813): warning C4244: '=': convers�o de 'wchar_t' para 'char', poss�vel perda de dados
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813): note: o contexto de instancia��o do modelo (o mais antigo primeiro) �
+extensions/winfuse.cpp(496): note: consulte a refer�ncia � instancia��o 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)' do modelo que est� sendo compilada
+        with
+        [
+            _Elem=wchar_t,
+            _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+            _Alloc=std::allocator<char>
+        ]
+extensions/winfuse.cpp(496): note: veja a primeira refer�ncia a 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string' em 'DokanyVFS::unmount'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812): note: consulte a refer�ncia � instancia��o 'void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<wchar_t*,wchar_t*,_Size_type>(_Iter,const _Sent,_Size)' do modelo que est� sendo compilada
+        with
+        [
+            _Size_type=unsigned __int64,
+            _Iter=wchar_t *,
+            _Sent=wchar_t *,
+            _Size=unsigned __int64
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968): note: consulte a refer�ncia � instancia��o '_OutIt *std::_Copy_n_unchecked4<wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)' do modelo que est� sendo compilada
+        with
+        [
+            _OutIt=char *,
+            _Size=unsigned __int64,
+            _InIt=wchar_t *,
+            _SizeTy=unsigned __int64
+        ]
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\link.exe" /nologo /INCREMENTAL:NO /LTCG /DLL /MANIFEST:EMBED,ID=2 /MANIFESTUAC:NO /LIBPATH:./lib /LIBPATH:C:\Repo\QuarkDrive\venv\libs /LIBPATH:C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\libs /LIBPATH:C:\Users\Ronilda\AppData\Local\Programs\Python\Python312 /LIBPATH:C:\Repo\QuarkDrive\venv\PCbuild\amd64 "/LIBPATH:C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\lib\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64" "/LIBPATH:C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x64" kernel32.lib user32.lib shlwapi.lib advapi32.lib dokan2.lib dokanfuse2.lib /EXPORT:PyInit_winfuse build\temp.win-amd64-cpython-312\Release\extensions\winfuse.obj /OUT:build\lib.win-amd64-cpython-312\winfuse.cp312-win_amd64.pyd /IMPLIB:build\temp.win-amd64-cpython-312\Release\extensions\winfuse.cp312-win_amd64.lib
    Criando biblioteca build\temp.win-amd64-cpython-312\Release\extensions\winfuse.cp312-win_amd64.lib e objeto build\temp.win-amd64-cpython-312\Release\extensions\winfuse.cp312-win_amd64.exp
 Gerando c�digo

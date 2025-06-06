@@ -383,21 +383,65 @@ class QuarkDriveGUI:
     def _unmount_worker(self):
         """Thread worker para desmontagem do sistema de arquivos"""
         try:
-            # Desmontar o sistema de arquivos
-            unmount_filesystem(self.mount_process)
+            # Adicionar log detalhado para depuração
+            self._append_log(f"[DEBUG] Iniciando desmontagem do sistema em {self.mount_process}")
+            
+            # Implementar timeout para evitar bloqueio indefinido
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                # Criar uma tarefa para desmontagem com timeout
+                future = executor.submit(unmount_filesystem, self.mount_process)
+                try:
+                    # Aguardar até 10 segundos pela desmontagem
+                    resultado = future.result(timeout=10)
+                    
+                    if resultado:
+                        self._append_log("[INFO] Sistema de arquivos desmontado com sucesso")
+                    else:
+                        self._append_log("[AVISO] Desmontagem retornou falso, verificando estado...")
+                        # Verificar se ainda está montado mesmo após falha
+                        if hasattr(self.mount_process, 'is_active') and self.mount_process.is_active():
+                            self._append_log("[ERRO] Sistema ainda está montado após tentativa de desmontagem")
+                        else:
+                            self._append_log("[INFO] Sistema parece estar desmontado apesar do erro")
+                    
+                except concurrent.futures.TimeoutError:
+                    self._append_log("[ERRO] Timeout na desmontagem após 10 segundos")
+                    # Tentar forçar a desmontagem em caso de timeout
+                    self._append_log("[INFO] Tentando forçar desmontagem...")
+                    try:
+                        # Implementação específica para forçar desmontagem
+                        if platform.system() == 'Windows' and hasattr(self.mount_process, 'mount_point'):
+                            import subprocess
+                            drive = self.mount_process.mount_point.rstrip(':') + ':'
+                            subprocess.run(['taskkill', '/F', '/IM', 'winfuse.exe'], shell=True, timeout=3)
+                            self._append_log(f"[INFO] Forçada finalização de processos winfuse para {drive}")
+                    except Exception as force_err:
+                        self._append_log(f"[ERRO] Falha ao forçar desmontagem: {str(force_err)}")
+            
+            # Limpar referência ao processo de montagem
             self.mount_process = None
             
             # Atualizar status
             self._update_status_icon("unmounted")
-            self._append_log("[INFO] Sistema de arquivos desmontado com sucesso")
             
             # Habilitar botão de montar e desabilitar botão de desmontar
             dpg.configure_item("mount_btn", enabled=True)
             dpg.configure_item("unmount_btn", enabled=False)
             
         except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
             self._append_log(f"[ERRO] Falha na thread de desmontagem: {str(e)}")
-    
+            self._append_log(f"[DEBUG] Detalhes do erro: {error_details}")
+            # Tentar atualizar a interface mesmo após erro
+            try:
+                self._update_status_icon("error")
+                dpg.configure_item("mount_btn", enabled=True)
+                dpg.configure_item("unmount_btn", enabled=True)
+            except:
+                pass
+
     def _start_mount(self):
         """Montar o sistema de arquivos"""
         try:
@@ -465,12 +509,43 @@ class QuarkDriveGUI:
         dpg.show_viewport()
         
         # Configurar janela principal
-        dpg.set_primary_window("main_window", True)
+        def _on_viewport_resize():
+            # Este callback será usado apenas para redimensionamento
+            pass
+        
+        # Registrar apenas o callback de redimensionamento
+        dpg.set_viewport_resize_callback(_on_viewport_resize)
+        
+        # Remover a linha problemática: dpg.set_viewport_close_callback(_on_viewport_close)
         
         # Loop principal
         while dpg.is_dearpygui_running() and self.running:
+            # Renderizar frame
             dpg.render_dearpygui_frame()
-            time.sleep(0.01)
+            
+            # Verificar se a viewport foi fechada pelo usuário
+            if not dpg.is_viewport_ok():
+                # Desmontar o sistema de arquivos se estiver montado
+                if self.mount_process:
+                    print("Desmontando sistema de arquivos antes de fechar...")
+                    try:
+                        # Desmontar de forma síncrona em vez de usar uma thread
+                        unmount_filesystem(self.mount_process)
+                        # Adicionar um pequeno atraso para garantir que a desmontagem seja concluída
+                        time.sleep(0.5)
+                        self.mount_process = None
+                        print("Sistema de arquivos desmontado com sucesso!")
+                    except Exception as e:
+                        print(f"Erro ao desmontar: {str(e)}")
+                        self._append_log(f"[ERRO] Falha na desmontagem: {str(e)}")
+                
+                # Definir running como False para encerrar o loop principal
+                self.running = False
+        
+        # Remover o segundo loop duplicado
+        # while dpg.is_dearpygui_running() and self.running:
+        #     dpg.render_dearpygui_frame()
+        #     time.sleep(0.01)
         
         # Limpar recursos
         dpg.destroy_context()

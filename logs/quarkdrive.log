@@ -1,0 +1,27 @@
+2025-06-05 23:51:48,677 - root - INFO - Iniciando QuarkDrive
+2025-06-06 00:06:21,728 - root - INFO - Iniciando QuarkDrive
+2025-06-06 00:06:22,161 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 00:06:24,975 - root - INFO - Iniciando QuarkDrive
+2025-06-06 00:06:24,991 - root - INFO - Iniciando interface gráfica
+2025-06-06 00:07:55,127 - QuarkDrive - ERROR - Erro ao montar sistema de arquivos: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+2025-06-06 00:07:55,128 - QuarkDrive - DEBUG - Traceback (most recent call last):
+  File "C:\Repo\QuarkDrive\fs\dokan_mount.py", line 32, in mount_filesystem
+    from .windows_mount import is_admin
+ImportError: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+
+2025-06-06 00:08:12,609 - QuarkDrive - ERROR - Erro ao montar sistema de arquivos: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+2025-06-06 00:08:12,610 - QuarkDrive - DEBUG - Traceback (most recent call last):
+  File "C:\Repo\QuarkDrive\fs\dokan_mount.py", line 32, in mount_filesystem
+    from .windows_mount import is_admin
+ImportError: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+
+2025-06-06 00:13:14,712 - root - INFO - Iniciando QuarkDrive
+2025-06-06 00:13:14,949 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 00:13:18,579 - root - INFO - Iniciando QuarkDrive
+2025-06-06 00:13:18,583 - root - INFO - Iniciando interface gráfica
+2025-06-06 00:13:32,890 - QuarkDrive - ERROR - Erro ao montar sistema de arquivos: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+2025-06-06 00:13:32,906 - QuarkDrive - DEBUG - Traceback (most recent call last):
+  File "C:\Repo\QuarkDrive\fs\dokan_mount.py", line 32, in mount_filesystem
+    from .windows_mount import is_admin
+ImportError: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+

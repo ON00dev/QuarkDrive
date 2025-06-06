@@ -6,9 +6,21 @@ import asyncio
 from typing import Callable, Optional
 from concurrent.futures import ThreadPoolExecutor
 
+# Adicionar após a importação do winfuse
 if platform.system() == 'Windows':
     try:
         import winfuse
+        import ctypes
+        
+        # Verificar se está executando como administrador
+        def is_admin():
+            try:
+                if winfuse and hasattr(winfuse, 'check_admin_privileges'):
+                    return winfuse.check_admin_privileges()
+                else:
+                    return ctypes.windll.shell32.IsUserAnAdmin() != 0
+            except:
+                return False
     except ImportError:
         print("ERRO: winfuse não compilado!")
         winfuse = None
@@ -146,6 +158,7 @@ class WindowsVFSMount:
         self.mount_point = None
         self.is_mounted = False
         self.vfs_callbacks = {}
+        self.mount_timeout = 15  # timeout em segundos
         
     def set_filesystem_callbacks(self, 
                                read_func: Callable[[str], bytes],
@@ -163,7 +176,10 @@ class WindowsVFSMount:
         }
     
     def mount(self, drive_letter: str) -> bool:
-        """Monta a unidade virtual no Windows"""
+        """Monta a unidade virtual no Windows com melhor tratamento de erros"""
+        import logging
+        logger = logging.getLogger("QuarkDrive")
+        
         if platform.system() != 'Windows':
             raise RuntimeError("WindowsVFSMount só funciona no Windows")
             
@@ -171,58 +187,108 @@ class WindowsVFSMount:
             raise RuntimeError("Módulo winfuse não disponível")
             
         if self.is_mounted:
+            logger.warning("Sistema já está montado")
+            return False
+        
+        # Verificar privilégios de administrador
+        if not is_admin():
+            error_msg = "ERRO: Privilégios de administrador são necessários para montar unidades FUSE/Dokan"
+            logger.error(error_msg)
+            print(f"❌ {error_msg}")
             return False
             
         # Normalizar letra da unidade (ex: "Z:" -> "Z")
         drive = drive_letter.upper().rstrip(':')
         
         try:
+            logger.info(f"Iniciando montagem da unidade {drive}:")
+            
             # Montar usando o módulo C++
             success = winfuse.mount_drive(drive + ":", self.backend_path)
             
+            if not success:
+                # Verificar se há um erro específico
+                if hasattr(winfuse, 'get_last_error'):
+                    error_msg = winfuse.get_last_error()
+                    logger.error(f"Falha na montagem: {error_msg}")
+                    print(f"❌ Falha ao montar unidade {drive}: {error_msg}")
+                else:
+                    logger.error("Falha na montagem sem detalhes")
+                    print(f"❌ Falha ao montar unidade {drive}")
+                return False
+            
+            # Configurar callbacks se a montagem foi bem-sucedida
             if success and self.vfs_callbacks:
-                # Configurar callbacks
-                winfuse.set_callbacks(
-                    drive + ":",
-                    self.vfs_callbacks.get('read'),
-                    self.vfs_callbacks.get('write'),
-                    self.vfs_callbacks.get('list'),
-                    self.vfs_callbacks.get('exists'),
-                    self.vfs_callbacks.get('size')
-                )
+                try:
+                    # Configurar callbacks
+                    winfuse.set_callbacks(
+                        drive + ":",
+                        self.vfs_callbacks.get('read'),
+                        self.vfs_callbacks.get('write'),
+                        self.vfs_callbacks.get('list'),
+                        self.vfs_callbacks.get('exists'),
+                        self.vfs_callbacks.get('size')
+                    )
+                    logger.info("Callbacks configurados com sucesso")
+                except Exception as e:
+                    logger.error(f"Erro ao configurar callbacks: {str(e)}")
+                    # Tentar desmontar se os callbacks falharem
+                    try:
+                        winfuse.unmount_drive(drive + ":")
+                    except:
+                        pass
+                    return False
             
             if success:
                 self.mount_point = drive + ":"
                 self.is_mounted = True
+                logger.info(f"Unidade {self.mount_point} montada com sucesso!")
                 print(f"[✓] Unidade {self.mount_point} montada com sucesso!")
                 return True
-            else:
-                print(f"❌ Falha ao montar unidade {drive}:")
-                return False
                 
         except Exception as e:
-            print(f"❌ Erro ao montar: {e}")
+            import traceback
+            logger.error(f"Exceção ao montar: {str(e)}")
+            logger.debug(traceback.format_exc())
+            print(f"❌ Erro ao montar: {str(e)}")
             return False
     
     def unmount(self) -> bool:
-        """Desmonta a unidade virtual"""
+        """Desmonta a unidade virtual com melhor tratamento de erros"""
+        import logging
+        logger = logging.getLogger("QuarkDrive")
+        
         if not self.is_mounted or not self.mount_point:
+            logger.warning("Tentativa de desmontar sistema não montado")
             return False
             
         try:
+            logger.info(f"Iniciando desmontagem da unidade {self.mount_point}")
+            
             success = winfuse.unmount_drive(self.mount_point)
             
             if success:
+                logger.info(f"Unidade {self.mount_point} desmontada com sucesso!")
                 print(f"[✓] Unidade {self.mount_point} desmontada com sucesso!")
                 self.mount_point = None
                 self.is_mounted = False
                 return True
             else:
-                print(f"❌ Falha ao desmontar unidade {self.mount_point}")
+                # Verificar se há um erro específico
+                if hasattr(winfuse, 'get_last_error'):
+                    error_msg = winfuse.get_last_error()
+                    logger.error(f"Falha na desmontagem: {error_msg}")
+                    print(f"❌ Falha ao desmontar unidade {self.mount_point}: {error_msg}")
+                else:
+                    logger.error("Falha na desmontagem sem detalhes")
+                    print(f"❌ Falha ao desmontar unidade {self.mount_point}")
                 return False
                 
         except Exception as e:
-            print(f"❌ Erro ao desmontar: {e}")
+            import traceback
+            logger.error(f"Exceção ao desmontar: {str(e)}")
+            logger.debug(traceback.format_exc())
+            print(f"❌ Erro ao desmontar: {str(e)}")
             return False
     
     def get_mounted_drives(self) -> list:
@@ -256,6 +322,32 @@ def mount_windows_filesystem(mount_point: str, backend_path: str,
 
 def unmount_windows_filesystem(vfs_mount: WindowsVFSMount) -> bool:
     """Função de conveniência para desmontar sistema de arquivos Windows"""
-    if vfs_mount:
-        return vfs_mount.unmount()
-    return False
+    import logging
+    logger = logging.getLogger("QuarkDrive")
+    
+    if not vfs_mount:
+        logger.warning("Tentativa de desmontar um sistema não montado")
+        return False
+    
+    try:
+        # Registrar informações de diagnóstico antes da desmontagem
+        mount_point = getattr(vfs_mount, 'mount_point', 'desconhecido')
+        is_mounted = getattr(vfs_mount, 'is_mounted', False)
+        logger.info(f"Desmontando Windows VFS: {mount_point} (montado: {is_mounted})")
+        
+        # Tentar desmontar com timeout
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(vfs_mount.unmount)
+            try:
+                result = future.result(timeout=8)  # 8 segundos de timeout
+                logger.info(f"Resultado da desmontagem: {result}")
+                return result
+            except concurrent.futures.TimeoutError:
+                logger.error(f"Timeout ao desmontar {mount_point}")
+                return False
+    except Exception as e:
+        import traceback
+        logger.error(f"Erro ao desmontar Windows VFS: {str(e)}")
+        logger.debug(f"Detalhes do erro: {traceback.format_exc()}")
+        return False
