@@ -1,0 +1,4 @@
+2025-06-06 20:35:57 - Falha na montagem da unidade Q:: 
+2025-06-06 20:35:57 - Thread de montagem iniciada para unidade Q:
+2025-06-06 20:39:51 - Thread de montagem iniciada para unidade T:
+2025-06-06 20:39:51 - Falha na montagem da unidade T:: 

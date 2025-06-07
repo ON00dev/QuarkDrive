@@ -17,6 +17,22 @@
 #include <chrono>
 #include <atomic>
 
+// Função de utilidade para converter wstring para string UTF-8
+static std::string wstring_to_utf8(const std::wstring& wstr) {
+    if (wstr.empty()) return std::string();
+    
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);
+    std::string str(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &str[0], size_needed, NULL, NULL);
+    return str;
+}
+
+// Função de utilidade para converter LPCWSTR para string UTF-8
+static std::string wchar_to_utf8(LPCWSTR wstr) {
+    if (!wstr) return std::string();
+    return wstring_to_utf8(std::wstring(wstr));
+}
+
 namespace py = pybind11;
 
 // Variáveis globais para controle de erros e logging
@@ -493,7 +509,7 @@ public:
                 return false;
             }
             
-            std::string mp(mount_point.begin(), mount_point.end());
+            std::string mp = wstring_to_utf8(mount_point);
             log_message("Iniciando desmontagem da unidade " + mp);
             
             // Tentar desmontar com timeout
@@ -591,7 +607,7 @@ static DokanyVFS* GetVFSInstance(PDOKAN_FILE_INFO DokanFileInfo) {
     
     // Converter o ponto de montagem de wchar_t* para string
     std::wstring mount_point(DokanFileInfo->DokanOptions->MountPoint);
-    std::string drive_letter(mount_point.begin(), mount_point.end());
+    std::string drive_letter = wstring_to_utf8(mount_point);
     
     auto it = g_mounts.find(drive_letter);
     if (it == g_mounts.end()) {
@@ -600,68 +616,68 @@ static DokanyVFS* GetVFSInstance(PDOKAN_FILE_INFO DokanFileInfo) {
     
     return it->second.get();
 }
-
 // Função auxiliar para converter caminho de wchar_t* para string
 static std::string ConvertFileName(LPCWSTR FileName) {
     if (!FileName) return "";
     
-    std::wstring wpath(FileName);
-    // Converter de wstring para string (simplificado, pode precisar de ajustes para UTF-8)
-    return std::string(wpath.begin(), wpath.end());
+    return wchar_to_utf8(FileName);
 }
 
-// Funções globais para gerenciar montagens
-bool mount_drive(const std::string& drive_letter, const std::string& backend_path) {
-    // Verificar se já existe uma montagem para esta letra
-    if (g_mounts.find(drive_letter) != g_mounts.end()) {
-        return false;
-    }
-    
-    // Criar nova instância
-    auto vfs = std::make_shared<DokanyVFS>();
-    bool success = vfs->mount(drive_letter);
-    
-    if (success) {
-        g_mounts[drive_letter] = vfs;
-    }
-    
-    return success;
-}
+namespace {
 
-bool unmount_drive(const std::string& drive_letter) {
-    auto it = g_mounts.find(drive_letter);
-    if (it == g_mounts.end()) {
-        return false;
+    // Funções globais para gerenciar montagens
+    bool mount_drive(const std::string& drive_letter, const std::string& backend_path) {
+        // Verificar se já existe uma montagem para esta letra
+        if (g_mounts.find(drive_letter) != g_mounts.end()) {
+            return false;
+        }
+        
+        // Criar nova instância
+        auto vfs = std::make_shared<DokanyVFS>();
+        bool success = vfs->mount(drive_letter);
+        
+        if (success) {
+            g_mounts[drive_letter] = vfs;
+        }
+        
+        return success;
     }
-    
-    bool success = it->second->unmount();
-    if (success) {
-        g_mounts.erase(it);
-    }
-    
-    return success;
-}
 
-// Função para configurar callbacks
-void set_callbacks(
-    const std::string& drive_letter,
-    std::function<py::bytes(const std::string&)> read_cb,
-    std::function<void(const std::string&, const py::bytes&)> write_cb,
-    std::function<std::vector<std::string>(const std::string&)> list_cb,
-    std::function<bool(const std::string&)> exists_cb,
-    std::function<size_t(const std::string&)> size_cb) {
-    
-    auto it = g_mounts.find(drive_letter);
-    if (it == g_mounts.end()) {
-        throw std::runtime_error("Unidade não encontrada: " + drive_letter);
+    bool unmount_drive(const std::string& drive_letter) {
+        auto it = g_mounts.find(drive_letter);
+        if (it == g_mounts.end()) {
+            return false;
+        }
+        
+        bool success = it->second->unmount();
+        if (success) {
+            g_mounts.erase(it);
+        }
+        
+        return success;
     }
-    
-    auto& vfs = it->second;
-    if (read_cb) vfs->set_read_callback(read_cb);
-    if (write_cb) vfs->set_write_callback(write_cb);
-    if (list_cb) vfs->set_list_callback(list_cb);
-    if (exists_cb) vfs->set_exists_callback(exists_cb);
-    if (size_cb) vfs->set_size_callback(size_cb);
+
+    // Função para configurar callbacks
+    void set_callbacks(
+        const std::string& drive_letter,
+        std::function<py::bytes(const std::string&)> read_cb,
+        std::function<void(const std::string&, const py::bytes&)> write_cb,
+        std::function<std::vector<std::string>(const std::string&)> list_cb,
+        std::function<bool(const std::string&)> exists_cb,
+        std::function<size_t(const std::string&)> size_cb) {
+        
+        auto it = g_mounts.find(drive_letter);
+        if (it == g_mounts.end()) {
+            throw std::runtime_error("Unidade não encontrada: " + drive_letter);
+        }
+        
+        auto& vfs = it->second;
+        if (read_cb) vfs->set_read_callback(read_cb);
+        if (write_cb) vfs->set_write_callback(write_cb);
+        if (list_cb) vfs->set_list_callback(list_cb);
+        if (exists_cb) vfs->set_exists_callback(exists_cb);
+        if (size_cb) vfs->set_size_callback(size_cb);
+    }
 }
 
 PYBIND11_MODULE(winfuse, m) {

@@ -5,25 +5,59 @@ import time
 import asyncio
 from typing import Callable, Optional
 from concurrent.futures import ThreadPoolExecutor
+import sys
+from pathlib import Path
 
-# Adicionar após a importação do winfuse
-if platform.system() == 'Windows':
-    try:
-        import winfuse
-        import ctypes
-        
-        # Verificar se está executando como administrador
-        def is_admin():
+# Variável global para armazenar o módulo winfuse
+winfuse = None
+
+# Função para importar o módulo winfuse quando necessário
+def import_winfuse():
+    global winfuse
+    if winfuse is None and platform.system() == 'Windows':
+        try:
+            # Configurar caminhos para garantir que o módulo seja encontrado
+            lib_path = str(Path(__file__).parent.parent / "lib")
+            site_packages_path = str(Path(__file__).parent.parent / "lib" / "site-packages")
+            
+            # Adicionar ao sys.path se ainda não estiver lá
+            if site_packages_path not in sys.path:
+                sys.path.insert(0, site_packages_path)
+            
+            # Adicionar ao PATH para DLLs
             try:
-                if winfuse and hasattr(winfuse, 'check_admin_privileges'):
-                    return winfuse.check_admin_privileges()
-                else:
-                    return ctypes.windll.shell32.IsUserAnAdmin() != 0
-            except:
-                return False
-    except ImportError:
-        print("ERRO: winfuse não compilado!")
-        winfuse = None
+                os.add_dll_directory(lib_path)
+            except AttributeError:
+                # Para versões mais antigas do Python sem add_dll_directory
+                os.environ['PATH'] = lib_path + os.pathsep + os.environ.get('PATH', '')
+                
+            # Agora tenta importar o módulo
+            import winfuse as winfuse_module
+            winfuse = winfuse_module
+            return winfuse_module
+        except ImportError as e:
+            print(f"ERRO: winfuse não compilado! Detalhes: {e}")
+            return None
+        except Exception as e:
+            print(f"ERRO: Falha ao inicializar winfuse! Detalhes: {e}")
+            return None
+    return winfuse
+
+# Definir a função is_admin usando importação tardia
+def is_admin():
+    try:
+        if platform.system() == 'Windows':
+            winfuse_module = import_winfuse()
+            if winfuse_module and hasattr(winfuse_module, 'check_admin_privileges'):
+                return winfuse_module.check_admin_privileges()
+            else:
+                import ctypes
+                return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        else:
+            # Em sistemas não-Windows, verificar se é root (uid 0)
+            return os.geteuid() == 0
+    except:
+        return False
 
 class ThreadSafeWindowsVFS:
     def __init__(self, backend_path: str):
@@ -183,7 +217,34 @@ class WindowsVFSMount:
         if platform.system() != 'Windows':
             raise RuntimeError("WindowsVFSMount só funciona no Windows")
             
-        if not winfuse:
+        # Tentar importar o módulo winfuse com mais informações de diagnóstico
+        logger.info("Tentando importar o módulo winfuse...")
+        winfuse_module = import_winfuse()
+        
+        if not winfuse_module:
+            logger.error("Falha ao importar o módulo winfuse")
+            # Verificar se o arquivo .pyd existe
+            import os
+            site_packages_path = str(Path(__file__).parent.parent / "lib" / "site-packages")
+            winfuse_path = os.path.join(site_packages_path, "winfuse.pyd")
+            
+            if os.path.exists(winfuse_path):
+                logger.error(f"O arquivo {winfuse_path} existe, mas não pôde ser importado")
+                # Tentar importar diretamente com informações de erro detalhadas
+                try:
+                    import importlib.util
+                    spec = importlib.util.spec_from_file_location("winfuse", winfuse_path)
+                    winfuse_direct = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(winfuse_direct)
+                    logger.info("Importação direta bem-sucedida!")
+                    return winfuse_direct
+                except Exception as e:
+                    logger.error(f"Erro na importação direta: {str(e)}")
+                    import traceback
+                    logger.debug(traceback.format_exc())
+            else:
+                logger.error(f"O arquivo {winfuse_path} não existe")
+                
             raise RuntimeError("Módulo winfuse não disponível")
             
         if self.is_mounted:
@@ -194,7 +255,7 @@ class WindowsVFSMount:
         if not is_admin():
             error_msg = "ERRO: Privilégios de administrador são necessários para montar unidades FUSE/Dokan"
             logger.error(error_msg)
-            print(f"❌ {error_msg}")
+            print(f"[X] {error_msg}")
             return False
             
         # Normalizar letra da unidade (ex: "Z:" -> "Z")

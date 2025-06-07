@@ -25,3 +25,84 @@ ImportError: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\Quar
     from .windows_mount import is_admin
 ImportError: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
 
+2025-06-06 19:33:59,252 - root - INFO - Iniciando QuarkDrive
+2025-06-06 19:33:59,774 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 19:34:02,644 - root - INFO - Iniciando QuarkDrive
+2025-06-06 19:34:02,664 - root - INFO - Iniciando interface gráfica
+2025-06-06 19:34:16,180 - QuarkDrive - ERROR - Erro ao montar sistema de arquivos: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+2025-06-06 19:34:16,211 - QuarkDrive - DEBUG - Traceback (most recent call last):
+  File "C:\Repo\QuarkDrive\fs\dokan_mount.py", line 32, in mount_filesystem
+    from .windows_mount import is_admin
+ImportError: cannot import name 'is_admin' from 'fs.windows_mount' (C:\Repo\QuarkDrive\fs\windows_mount.py)
+
+2025-06-06 20:18:01,884 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:18:01,996 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 20:18:03,721 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:18:03,723 - root - INFO - Iniciando interface gráfica
+2025-06-06 20:18:21,624 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-06 20:18:21,624 - QuarkDrive - INFO - Montando sistema de arquivos Windows em Q:
+2025-06-06 20:18:21,624 - QuarkDrive - ERROR - Erro ao montar sistema de arquivos: Módulo winfuse não disponível
+2025-06-06 20:18:21,639 - QuarkDrive - DEBUG - Traceback (most recent call last):
+  File "C:\Repo\QuarkDrive\fs\dokan_mount.py", line 97, in mount_filesystem
+    vfs_mount = future.result(timeout=20)  # 20 segundos de timeout
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Repo\QuarkDrive\fs\windows_mount.py", line 329, in mount_windows_filesystem
+    if vfs.mount(mount_point):
+       ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Repo\QuarkDrive\fs\windows_mount.py", line 197, in mount
+    raise RuntimeError("Módulo winfuse não disponível")
+RuntimeError: Módulo winfuse não disponível
+
+2025-06-06 20:28:58,209 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:28:58,249 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 20:29:00,071 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:29:00,075 - root - INFO - Iniciando interface gráfica
+2025-06-06 20:30:35,820 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:30:35,862 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 20:30:37,867 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:30:37,867 - root - INFO - Iniciando interface gráfica
+2025-06-06 20:30:42,630 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-06 20:30:42,630 - QuarkDrive - INFO - Montando sistema de arquivos Windows em Q:
+2025-06-06 20:30:42,630 - QuarkDrive - ERROR - Erro ao montar sistema de arquivos: Módulo winfuse não disponível
+2025-06-06 20:30:42,630 - QuarkDrive - DEBUG - Traceback (most recent call last):
+  File "C:\Repo\QuarkDrive\fs\dokan_mount.py", line 97, in mount_filesystem
+    vfs_mount = future.result(timeout=20)  # 20 segundos de timeout
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\Ronilda\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Repo\QuarkDrive\fs\windows_mount.py", line 334, in mount_windows_filesystem
+    if vfs.mount(mount_point):
+       ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Repo\QuarkDrive\fs\windows_mount.py", line 202, in mount
+    raise RuntimeError("Módulo winfuse não disponível")
+RuntimeError: Módulo winfuse não disponível
+
+2025-06-06 20:35:49,113 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:35:49,156 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 20:35:51,458 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:35:51,460 - root - INFO - Iniciando interface gráfica
+2025-06-06 20:35:57,308 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-06 20:35:57,308 - QuarkDrive - INFO - Montando sistema de arquivos Windows em Q:
+2025-06-06 20:35:57,308 - QuarkDrive - INFO - Iniciando montagem da unidade Q:
+2025-06-06 20:39:38,603 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:39:38,641 - root - INFO - Solicitando privilégios de administrador...
+2025-06-06 20:39:40,470 - root - INFO - Iniciando QuarkDrive
+2025-06-06 20:39:40,470 - root - INFO - Iniciando interface gráfica
+2025-06-06 20:39:51,337 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-06 20:39:51,337 - QuarkDrive - INFO - Montando sistema de arquivos Windows em T:
+2025-06-06 20:39:51,353 - QuarkDrive - INFO - Tentando importar o módulo winfuse...
+2025-06-06 20:39:51,353 - QuarkDrive - INFO - Iniciando montagem da unidade T:
