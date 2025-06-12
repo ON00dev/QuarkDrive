@@ -2,3 +2,24 @@
 2025-06-06 20:35:57 - Thread de montagem iniciada para unidade Q:
 2025-06-06 20:39:51 - Thread de montagem iniciada para unidade T:
 2025-06-06 20:39:51 - Falha na montagem da unidade T:: 
+2025-06-12 17:05:142025-06-12 17:05:14 -  - Thread de montagem iniciada para unidade Q:Falha na montagem da unidade Q:: 
+
+2025-06-12 17:05:28 - Thread de montagem iniciada para unidade Q:
+2025-06-12 17:05:49 - Falha na montagem da unidade Q:: 2025-06-12 17:05:49 - 
+Thread de montagem iniciada para unidade Q:
+2025-06-12 17:06:33 - Falha na montagem da unidade U:: 
+2025-06-12 17:06:33 - Thread de montagem iniciada para unidade U:
+2025-06-12 17:06:59 - Thread de montagem iniciada para unidade X:2025-06-12 17:06:59 - 
+Falha na montagem da unidade X:: 
+2025-06-12 17:07:11 - 2025-06-12 17:07:11 - Falha na montagem da unidade Q:: Thread de montagem iniciada para unidade Q:
+
+2025-06-12 17:07:44 - Falha na montagem da unidade Q:: 
+2025-06-12 17:07:44 - Thread de montagem iniciada para unidade Q:
+2025-06-12 17:07:58 - Falha na montagem da unidade Q:: 
+2025-06-12 17:07:58 - Thread de montagem iniciada para unidade Q:
+2025-06-12 17:18:122025-06-12 17:18:12 -  - Thread de montagem iniciada para unidade Q:Falha na montagem da unidade Q:: 
+
+2025-06-12 17:18:39 - 2025-06-12 17:18:39 - Thread de montagem iniciada para unidade Z:Falha na montagem da unidade Z:: 
+
+2025-06-12 18:12:08 - Falha na montagem da unidade Q:: 
+2025-06-12 18:12:08 - Thread de montagem iniciada para unidade Q:

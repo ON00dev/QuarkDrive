@@ -217,34 +217,10 @@ class WindowsVFSMount:
         if platform.system() != 'Windows':
             raise RuntimeError("WindowsVFSMount só funciona no Windows")
             
-        # Tentar importar o módulo winfuse com mais informações de diagnóstico
+        # Tentar importar o módulo winfuse
         logger.info("Tentando importar o módulo winfuse...")
         winfuse_module = import_winfuse()
-        
         if not winfuse_module:
-            logger.error("Falha ao importar o módulo winfuse")
-            # Verificar se o arquivo .pyd existe
-            import os
-            site_packages_path = str(Path(__file__).parent.parent / "lib" / "site-packages")
-            winfuse_path = os.path.join(site_packages_path, "winfuse.pyd")
-            
-            if os.path.exists(winfuse_path):
-                logger.error(f"O arquivo {winfuse_path} existe, mas não pôde ser importado")
-                # Tentar importar diretamente com informações de erro detalhadas
-                try:
-                    import importlib.util
-                    spec = importlib.util.spec_from_file_location("winfuse", winfuse_path)
-                    winfuse_direct = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(winfuse_direct)
-                    logger.info("Importação direta bem-sucedida!")
-                    return winfuse_direct
-                except Exception as e:
-                    logger.error(f"Erro na importação direta: {str(e)}")
-                    import traceback
-                    logger.debug(traceback.format_exc())
-            else:
-                logger.error(f"O arquivo {winfuse_path} não existe")
-                
             raise RuntimeError("Módulo winfuse não disponível")
             
         if self.is_mounted:
@@ -264,6 +240,16 @@ class WindowsVFSMount:
         try:
             logger.info(f"Iniciando montagem da unidade {drive}:")
             
+            # Verificar se a unidade já está em uso pelo sistema
+            import ctypes
+            drives_bitmask = ctypes.windll.kernel32.GetLogicalDrives()
+            drive_letter_value = ord(drive) - ord('A')
+            if (drives_bitmask & (1 << drive_letter_value)):
+                error_msg = f"A unidade {drive}: já está em uso pelo sistema"
+                logger.error(error_msg)
+                print(f"[X] {error_msg}")
+                return False
+            
             # Montar usando o módulo C++
             success = winfuse.mount_drive(drive + ":", self.backend_path)
             
@@ -272,10 +258,10 @@ class WindowsVFSMount:
                 if hasattr(winfuse, 'get_last_error'):
                     error_msg = winfuse.get_last_error()
                     logger.error(f"Falha na montagem: {error_msg}")
-                    print(f"❌ Falha ao montar unidade {drive}: {error_msg}")
+                    print(f"[X] Falha ao montar unidade {drive}: {error_msg}")
                 else:
                     logger.error("Falha na montagem sem detalhes")
-                    print(f"❌ Falha ao montar unidade {drive}")
+                    print(f"[X] Falha ao montar unidade {drive}")
                 return False
             
             # Configurar callbacks se a montagem foi bem-sucedida
@@ -311,7 +297,7 @@ class WindowsVFSMount:
             import traceback
             logger.error(f"Exceção ao montar: {str(e)}")
             logger.debug(traceback.format_exc())
-            print(f"❌ Erro ao montar: {str(e)}")
+            print(f"[X] Erro ao montar: {str(e)}")
             return False
     
     def unmount(self) -> bool:
@@ -339,17 +325,17 @@ class WindowsVFSMount:
                 if hasattr(winfuse, 'get_last_error'):
                     error_msg = winfuse.get_last_error()
                     logger.error(f"Falha na desmontagem: {error_msg}")
-                    print(f"❌ Falha ao desmontar unidade {self.mount_point}: {error_msg}")
+                    print(f"[X] Falha ao desmontar unidade {self.mount_point}: {error_msg}")
                 else:
                     logger.error("Falha na desmontagem sem detalhes")
-                    print(f"❌ Falha ao desmontar unidade {self.mount_point}")
+                    print(f"[X] Falha ao desmontar unidade {self.mount_point}")
                 return False
                 
         except Exception as e:
             import traceback
             logger.error(f"Exceção ao desmontar: {str(e)}")
             logger.debug(traceback.format_exc())
-            print(f"❌ Erro ao desmontar: {str(e)}")
+            print(f"[X] Erro ao desmontar: {str(e)}")
             return False
     
     def get_mounted_drives(self) -> list:
