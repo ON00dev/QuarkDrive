@@ -23,8 +23,6 @@ QuarkDrive is an advanced storage solution that combines intelligent deduplicati
 ## 🛠️ Installation
 
 ### [✓] Prerequisites
-
-- Python 3.8+  
 - Windows 10+ or Linux  
 - 4GB RAM (recommended)  
 - 1GB free disk space  
