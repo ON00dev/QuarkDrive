@@ -2,7 +2,7 @@ import sys
 import os
 from pathlib import Path
 
-print("=== Teste Direto de Importação ===")
+print("=== Teste Direto de Importacao ===")
 print(f"Python version: {sys.version}")
 print(f"Current directory: {os.getcwd()}")
 
@@ -19,10 +19,10 @@ for module_file in modules:
 
 print("\n=== Tentando importar compression_module ===")
 try:
-    print("Antes da importação...")
+    print("Antes da importacao...")
     import compression_module
     print("✓ compression_module importado com sucesso!")
-    print(f"Funções disponíveis: {[attr for attr in dir(compression_module) if not attr.startswith('_')]}")
+    print(f"Funcões disponiveis: {[attr for attr in dir(compression_module) if not attr.startswith('_')]}")
 except ImportError as e:
     print(f"✗ ImportError: {e}")
 except Exception as e:
@@ -30,4 +30,4 @@ except Exception as e:
     import traceback
     traceback.print_exc()
 
-print("\nTeste concluído.")
+print("\nTeste concluido.")

@@ -3,12 +3,12 @@ import errno
 import hashlib
 import platform
 
-# Importar módulo correto baseado no SO
+# Importar modulo correto baseado no SO
 if platform.system() == 'Windows':
     # No Windows, usar uma classe base simples para Operations
     class Operations:
         pass
-    # FUSE será importado do módulo winfuse quando necessário
+    # FUSE sera importado do modulo winfuse quando necessario
     FUSE = None
 else:
     # No Linux, usar fusepy
@@ -21,8 +21,8 @@ import zstandard as zstd
 class DedupCompressFS(Operations):
     """
     Sistema de Arquivos Virtual com:
-    - Desduplicação
-    - Compactação
+    - Desduplicacao
+    - Compactacao
     - Cache Inteligente
     """
 

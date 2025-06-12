@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Interface gráfica principal do QuarkDrive usando Dear PyGui
+Interface grafica principal do QuarkDrive usando Dear PyGui
 """
 
 import dearpygui.dearpygui as dpg
@@ -12,10 +12,10 @@ import time
 import platform
 from pathlib import Path
 
-# Adicionar o diretório raiz ao path
+# Adicionar o diretorio raiz ao path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Importação dos controladores
+# Importacao dos controladores
 from fs.dokan_mount import mount_filesystem, unmount_filesystem
 from core.manager import StorageManager
 
@@ -40,7 +40,7 @@ class QuarkDriveGUI:
         self.create_interface()
     
     def _get_os_info(self):
-        """Detectar informações do sistema operacional"""
+        """Detectar informacões do sistema operacional"""
         system = platform.system()
         release = platform.release()
         version = platform.version()
@@ -53,10 +53,10 @@ class QuarkDriveGUI:
         elif system == 'Darwin':
             return f"macOS {release} ({architecture}) - Usando FUSE"
         else:
-            return f"{system} {release} ({architecture}) - Sistema não identificado"
+            return f"{system} {release} ({architecture}) - Sistema nao identificado"
     
     def _load_icons(self):
-        """Carregar todos os ícones como texturas"""
+        """Carregar todos os icones como texturas"""
         icons_path = Path(__file__).parent / "icons"
         
         # Carregar todas as imagens
@@ -131,7 +131,7 @@ class QuarkDriveGUI:
             with dpg.theme_component(dpg.mvText):
                 dpg.add_theme_color(dpg.mvThemeCol_Text, (100, 200, 255, 255))
         
-        # Tema para valores de estatísticas
+        # Tema para valores de estatisticas
         with dpg.theme() as self.stats_theme:
             with dpg.theme_component(dpg.mvText):
                 dpg.add_theme_color(dpg.mvThemeCol_Text, (150, 255, 150, 255))
@@ -142,7 +142,7 @@ class QuarkDriveGUI:
         """Criar a interface principal"""
         with dpg.window(label="QuarkDrive - Sistema de Armazenamento Otimizado", tag="main_window", width=900, height=800):
             
-            # Header com logo e título
+            # Header com logo e titulo
             with dpg.child_window(height=80, border=False):
                 with dpg.group(horizontal=True):
                     dpg.add_image(self.icons['foguete'], width=24, height=24)
@@ -159,7 +159,7 @@ class QuarkDriveGUI:
             # Tabs principais
             with dpg.tab_bar():
                 with dpg.tab(label="Sistema de Arquivos"):
-                    # Adicionar ícone na tab
+                    # Adicionar icone na tab
                     with dpg.group(horizontal=True):
                         dpg.add_image(self.icons['disco'], width=16, height=16)
                         
@@ -207,28 +207,28 @@ class QuarkDriveGUI:
                         
                         with dpg.group(horizontal=True):
                             dpg.add_image(self.icons['definicoes'], width=16, height=16)
-                            dpg.add_text("Configurações Avançadas", color=(100, 200, 255, 255))
+                            dpg.add_text("Configuracões Avancadas", color=(100, 200, 255, 255))
                         dpg.add_spacer(height=10)
                         
                         with dpg.group(horizontal=True):
                             dpg.add_image(self.icons['deduplicar'], width=16, height=16)
-                            dpg.add_checkbox(label="Deduplicação Inteligente", tag="enable_dedup", default_value=True)
+                            dpg.add_checkbox(label="Deduplicacao Inteligente", tag="enable_dedup", default_value=True)
                         
                         with dpg.group(horizontal=True):
                             dpg.add_image(self.icons['comprimir'], width=16, height=16)
-                            dpg.add_checkbox(label="Compressão ZSTD", tag="enable_compression", default_value=True)
+                            dpg.add_checkbox(label="Compressao ZSTD", tag="enable_compression", default_value=True)
                         
                         with dpg.group(horizontal=True):
                             dpg.add_image(self.icons['cache'], width=16, height=16)
-                            dpg.add_checkbox(label="Cache Híbrido", tag="enable_cache", default_value=True)
+                            dpg.add_checkbox(label="Cache Hibrido", tag="enable_cache", default_value=True)
                 
-                with dpg.tab(label="Estatísticas"):
+                with dpg.tab(label="Estatisticas"):
                     with dpg.group(horizontal=True):
                         dpg.add_image(self.icons['estatisticas'], width=16, height=16)
                         
                     with dpg.child_window(height=400):
                         
-                        # Estatísticas em grid 2x2
+                        # Estatisticas em grid 2x2
                         with dpg.table(header_row=False, borders_innerH=True, borders_outerH=True, 
                                      borders_innerV=True, borders_outerV=True):
                             dpg.add_table_column()
@@ -239,7 +239,7 @@ class QuarkDriveGUI:
                                 with dpg.table_cell():
                                     with dpg.group(horizontal=True):
                                         dpg.add_image(self.icons['disco'], width=16, height=16)
-                                        dpg.add_text("Espaço Economizado")
+                                        dpg.add_text("Espaco Economizado")
                                     dpg.add_text("0 MB", tag="space_saved", color=(150, 255, 150, 255))
                                     
                                 with dpg.table_cell():
@@ -253,7 +253,7 @@ class QuarkDriveGUI:
                                 with dpg.table_cell():
                                     with dpg.group(horizontal=True):
                                         dpg.add_image(self.icons['comprimir'], width=16, height=16)
-                                        dpg.add_text("Taxa de Compressão")
+                                        dpg.add_text("Taxa de Compressao")
                                     dpg.add_text("0%", tag="compression_ratio", color=(150, 255, 150, 255))
                                     
                                 with dpg.table_cell():
@@ -266,7 +266,7 @@ class QuarkDriveGUI:
                         
                         with dpg.group(horizontal=True):
                             dpg.add_image(self.icons['atualizar'], width=16, height=16)
-                            refresh_btn = dpg.add_button(label="Atualizar Estatísticas", callback=self._force_update_stats, width=180, height=35)
+                            refresh_btn = dpg.add_button(label="Atualizar Estatisticas", callback=self._force_update_stats, width=180, height=35)
                         dpg.bind_item_theme(refresh_btn, self.success_theme)
                 
                 with dpg.tab(label="Logs"):
@@ -311,19 +311,19 @@ class QuarkDriveGUI:
                         
                         dpg.add_spacer(height=20)
                         
-                        # Botão sobre
+                        # Botao sobre
                         with dpg.group(horizontal=True):
                             dpg.add_image(self.icons['info'], width=16, height=16)
                             about_btn = dpg.add_button(label="Sobre o QuarkDrive", callback=self._show_about, width=180, height=35)
                         dpg.bind_item_theme(about_btn, self.highlight_theme)
             
-            # Footer com informações do sistema operacional
+            # Footer com informacões do sistema operacional
             dpg.add_spacer(height=20)
             dpg.add_separator()
             dpg.add_spacer(height=10)
             
             with dpg.group(horizontal=True):
-                # Usar ícone específico para o sistema operacional
+                # Usar icone especifico para o sistema operacional
                 if platform.system() == 'Windows':
                     dpg.add_image(self.icons['windows'], width=16, height=16)
                 elif platform.system() == 'Linux':
@@ -333,16 +333,16 @@ class QuarkDriveGUI:
                 dpg.add_text(f"Sistema: {self.os_info}", color=(150, 150, 150, 255))
 
     def _browse_mount_point(self):
-        """Abrir diálogo para selecionar ponto de montagem"""
+        """Abrir dialogo para selecionar ponto de montagem"""
         try:
             import tkinter as tk
             from tkinter import filedialog
             
-            # Criar janela temporária do tkinter e escondê-la
+            # Criar janela temporaria do tkinter e escondê-la
             root = tk.Tk()
             root.withdraw()
             
-            # Abrir diálogo para selecionar pasta
+            # Abrir dialogo para selecionar pasta
             folder_path = filedialog.askdirectory(title="Selecione o ponto de montagem")
             
             if folder_path:
@@ -358,13 +358,13 @@ class QuarkDriveGUI:
             root.destroy()
             
         except Exception as e:
-            self._append_log(f"[ERRO] Falha ao abrir diálogo: {str(e)}")
+            self._append_log(f"[ERRO] Falha ao abrir dialogo: {str(e)}")
 
     def _stop_mount(self):
         """Desmontar o sistema de arquivos"""
         try:
             if not self.mount_process:
-                self._append_log("[AVISO] Sistema de arquivos não está montado")
+                self._append_log("[AVISO] Sistema de arquivos nao esta montado")
                 return
             
             self._update_status_icon("unmounting")
@@ -383,7 +383,7 @@ class QuarkDriveGUI:
     def _unmount_worker(self):
         """Thread worker para desmontagem do sistema de arquivos"""
         try:
-            # Adicionar log detalhado para depuração
+            # Adicionar log detalhado para depuracao
             self._append_log(f"[DEBUG] Iniciando desmontagem do sistema em {self.mount_process}")
             
             # Implementar timeout para evitar bloqueio indefinido
@@ -392,32 +392,32 @@ class QuarkDriveGUI:
                 # Criar uma tarefa para desmontagem com timeout
                 future = executor.submit(unmount_filesystem, self.mount_process)
                 try:
-                    # Aguardar até 10 segundos pela desmontagem
+                    # Aguardar ate 10 segundos pela desmontagem
                     resultado = future.result(timeout=10)
                     
                     if resultado:
                         self._append_log("[INFO] Sistema de arquivos desmontado com sucesso")
                     else:
                         self._append_log("[AVISO] Desmontagem retornou falso, verificando estado...")
-                        # Verificar se ainda está montado mesmo após falha
+                        # Verificar se ainda esta montado mesmo apos falha
                         if hasattr(self.mount_process, 'is_active') and self.mount_process.is_active():
-                            self._append_log("[ERRO] Sistema ainda está montado após tentativa de desmontagem")
+                            self._append_log("[ERRO] Sistema ainda esta montado apos tentativa de desmontagem")
                         else:
                             self._append_log("[INFO] Sistema parece estar desmontado apesar do erro")
                     
                 except concurrent.futures.TimeoutError:
-                    self._append_log("[ERRO] Timeout na desmontagem após 10 segundos")
-                    # Tentar forçar a desmontagem em caso de timeout
-                    self._append_log("[INFO] Tentando forçar desmontagem...")
+                    self._append_log("[ERRO] Timeout na desmontagem apos 10 segundos")
+                    # Tentar forcar a desmontagem em caso de timeout
+                    self._append_log("[INFO] Tentando forcar desmontagem...")
                     try:
-                        # Implementação específica para forçar desmontagem
+                        # Implementacao especifica para forcar desmontagem
                         if platform.system() == 'Windows' and hasattr(self.mount_process, 'mount_point'):
                             import subprocess
                             drive = self.mount_process.mount_point.rstrip(':') + ':'
                             subprocess.run(['taskkill', '/F', '/IM', 'winfuse.exe'], shell=True, timeout=3)
-                            self._append_log(f"[INFO] Forçada finalização de processos winfuse para {drive}")
+                            self._append_log(f"[INFO] Forcada finalizacao de processos winfuse para {drive}")
                     except Exception as force_err:
-                        self._append_log(f"[ERRO] Falha ao forçar desmontagem: {str(force_err)}")
+                        self._append_log(f"[ERRO] Falha ao forcar desmontagem: {str(force_err)}")
             
             # Limpar referência ao processo de montagem
             self.mount_process = None
@@ -425,7 +425,7 @@ class QuarkDriveGUI:
             # Atualizar status
             self._update_status_icon("unmounted")
             
-            # Habilitar botão de montar e desabilitar botão de desmontar
+            # Habilitar botao de montar e desabilitar botao de desmontar
             dpg.configure_item("mount_btn", enabled=True)
             dpg.configure_item("unmount_btn", enabled=False)
             
@@ -434,7 +434,7 @@ class QuarkDriveGUI:
             error_details = traceback.format_exc()
             self._append_log(f"[ERRO] Falha na thread de desmontagem: {str(e)}")
             self._append_log(f"[DEBUG] Detalhes do erro: {error_details}")
-            # Tentar atualizar a interface mesmo após erro
+            # Tentar atualizar a interface mesmo apos erro
             try:
                 self._update_status_icon("error")
                 dpg.configure_item("mount_btn", enabled=True)
@@ -445,9 +445,9 @@ class QuarkDriveGUI:
     def _start_mount(self):
         """Montar o sistema de arquivos"""
         try:
-            # Verificar se já está montado
+            # Verificar se ja esta montado
             if self.mount_process:
-                self._append_log("[AVISO] Sistema de arquivos já está montado")
+                self._append_log("[AVISO] Sistema de arquivos ja esta montado")
                 return
             
             # Obter ponto de montagem
@@ -457,7 +457,7 @@ class QuarkDriveGUI:
                 mount_point = dpg.get_value("mount_point_input")
             
             if not mount_point:
-                self._append_log("[ERRO] Selecione um ponto de montagem válido")
+                self._append_log("[ERRO] Selecione um ponto de montagem valido")
                 return
             
             # Atualizar status
@@ -476,8 +476,8 @@ class QuarkDriveGUI:
     def _mount_worker(self, mount_point):
         """Thread worker para montagem do sistema de arquivos"""
         try:
-            # Montar o sistema de arquivos usando a implementação padrão
-            # que já possui os callbacks corretos
+            # Montar o sistema de arquivos usando a implementacao padrao
+            # que ja possui os callbacks corretos
             self.mount_process = mount_filesystem(
                 mount_point=mount_point,
                 dedup=True,
@@ -490,7 +490,7 @@ class QuarkDriveGUI:
                 self._update_status_icon("mounted")
                 self._append_log(f"[INFO] Sistema de arquivos montado com sucesso em {mount_point}")
                 
-                # Habilitar botão de desmontar e desabilitar botão de montar
+                # Habilitar botao de desmontar e desabilitar botao de montar
                 dpg.configure_item("mount_btn", enabled=False)
                 dpg.configure_item("unmount_btn", enabled=True)
             else:
@@ -502,7 +502,7 @@ class QuarkDriveGUI:
             self._append_log(f"[ERRO] Falha na thread de montagem: {str(e)}")
     
     def run(self):
-        """Executar a interface gráfica"""
+        """Executar a interface grafica"""
         # Configurar viewport
         dpg.create_viewport(title="QuarkDrive", width=900, height=800, resizable=True)
         dpg.setup_dearpygui()
@@ -510,28 +510,28 @@ class QuarkDriveGUI:
         
         # Configurar janela principal
         def _on_viewport_resize():
-            # Este callback será usado apenas para redimensionamento
+            # Este callback sera usado apenas para redimensionamento
             pass
         
         # Registrar apenas o callback de redimensionamento
         dpg.set_viewport_resize_callback(_on_viewport_resize)
         
-        # Remover a linha problemática: dpg.set_viewport_close_callback(_on_viewport_close)
+        # Remover a linha problematica: dpg.set_viewport_close_callback(_on_viewport_close)
         
         # Loop principal
         while dpg.is_dearpygui_running() and self.running:
             # Renderizar frame
             dpg.render_dearpygui_frame()
             
-            # Verificar se a viewport foi fechada pelo usuário
+            # Verificar se a viewport foi fechada pelo usuario
             if not dpg.is_viewport_ok():
                 # Desmontar o sistema de arquivos se estiver montado
                 if self.mount_process:
                     print("Desmontando sistema de arquivos antes de fechar...")
                     try:
-                        # Desmontar de forma síncrona em vez de usar uma thread
+                        # Desmontar de forma sincrona em vez de usar uma thread
                         unmount_filesystem(self.mount_process)
-                        # Adicionar um pequeno atraso para garantir que a desmontagem seja concluída
+                        # Adicionar um pequeno atraso para garantir que a desmontagem seja concluida
                         time.sleep(0.5)
                         self.mount_process = None
                         print("Sistema de arquivos desmontado com sucesso!")
@@ -551,9 +551,9 @@ class QuarkDriveGUI:
         dpg.destroy_context()
 
     def _force_update_stats(self):
-            """Força a atualização das estatísticas na interface"""
+            """Forca a atualizacao das estatisticas na interface"""
             try:
-                # Obter estatísticas atualizadas do gerenciador
+                # Obter estatisticas atualizadas do gerenciador
                 stats = self.manager.stats
                 
                 # Atualizar elementos da interface
@@ -563,10 +563,10 @@ class QuarkDriveGUI:
                 dpg.set_value("cache_usage", f"{stats.cache_usage_percent:.1f}%")
                 
                 # Registrar no log
-                self._append_log("[INFO] Estatísticas atualizadas com sucesso")
+                self._append_log("[INFO] Estatisticas atualizadas com sucesso")
                 
             except Exception as e:
-                self._append_log(f"[ERRO] Falha ao atualizar estatísticas: {str(e)}")
+                self._append_log(f"[ERRO] Falha ao atualizar estatisticas: {str(e)}")
 
     def _append_log(self, message):
         """Adiciona uma mensagem ao log"""
@@ -582,18 +582,18 @@ class QuarkDriveGUI:
             dpg.set_value("log_text", new_log)
             
             # Auto-scroll para o final
-            # Nota: DearPyGui não tem scroll automático nativo, então isso é uma aproximação
+            # Nota: DearPyGui nao tem scroll automatico nativo, entao isso e uma aproximacao
             try:
                 dpg.set_y_scroll("log_text", -1.0)
             except Exception:
-                # Ignora erro de scroll - pode ocorrer quando não há scroll disponível
+                # Ignora erro de scroll - pode ocorrer quando nao ha scroll disponivel
                 pass
             
         except Exception as e:
             print(f"Erro ao adicionar log: {str(e)}")
     
     def _clear_logs(self):
-        """Limpa o conteúdo da área de logs"""
+        """Limpa o conteudo da area de logs"""
         try:
             # Limpar o texto do log, mantendo apenas a mensagem inicial
             dpg.set_value("log_text", "[INFO] Log limpo\n")
@@ -602,19 +602,19 @@ class QuarkDriveGUI:
             print(f"Erro ao limpar logs: {str(e)}")
     
     def _save_logs(self):
-        """Salva o conteúdo dos logs em um arquivo"""
+        """Salva o conteudo dos logs em um arquivo"""
         try:
             import tkinter as tk
             from tkinter import filedialog
             
-            # Criar janela temporária do tkinter e escondê-la
+            # Criar janela temporaria do tkinter e escondê-la
             root = tk.Tk()
             root.withdraw()
             
             # Obter o texto atual do log
             log_content = dpg.get_value("log_text")
             
-            # Abrir diálogo para salvar arquivo
+            # Abrir dialogo para salvar arquivo
             file_path = filedialog.asksaveasfilename(
                 title="Salvar Logs",
                 defaultextension=".txt",
@@ -622,7 +622,7 @@ class QuarkDriveGUI:
             )
             
             if file_path:
-                # Salvar o conteúdo em um arquivo
+                # Salvar o conteudo em um arquivo
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(log_content)
                 
@@ -637,9 +637,9 @@ class QuarkDriveGUI:
     def _run_tests(self):
         """Executa os testes do sistema"""
         try:
-            self._append_log("[INFO] Iniciando execução de testes...")
+            self._append_log("[INFO] Iniciando execucao de testes...")
             
-            # Criar thread para executar os testes para não bloquear a interface
+            # Criar thread para executar os testes para nao bloquear a interface
             test_thread = threading.Thread(target=self._test_worker)
             test_thread.daemon = True
             test_thread.start()
@@ -648,7 +648,7 @@ class QuarkDriveGUI:
             self._append_log(f"[ERRO] Falha ao iniciar testes: {str(e)}")
         
         def _test_worker(self):
-            """Thread worker para execução de testes"""
+            """Thread worker para execucao de testes"""
             try:
                 import subprocess
                 
@@ -660,55 +660,55 @@ class QuarkDriveGUI:
                     text=True
                 )
                 
-                # Registrar saída dos testes no log
+                # Registrar saida dos testes no log
                 if result.returncode == 0:
-                    self._append_log("[INFO] Testes concluídos com sucesso!")
+                    self._append_log("[INFO] Testes concluidos com sucesso!")
                 else:
                     self._append_log("[AVISO] Alguns testes falharam.")
                 
-                # Adicionar detalhes da saída dos testes ao log
+                # Adicionar detalhes da saida dos testes ao log
                 output_lines = result.stdout.split('\n')
-                for line in output_lines[:20]:  # Limitar a quantidade de linhas para não sobrecarregar o log
+                for line in output_lines[:20]:  # Limitar a quantidade de linhas para nao sobrecarregar o log
                     if line.strip():
                         self._append_log(f"[TESTE] {line.strip()}")
                 
                 if len(output_lines) > 20:
-                    self._append_log(f"[INFO] ... e mais {len(output_lines) - 20} linhas de saída")
+                    self._append_log(f"[INFO] ... e mais {len(output_lines) - 20} linhas de saida")
                 
             except FileNotFoundError:
-                self._append_log("[ERRO] pytest não encontrado. Instale com: pip install pytest")
+                self._append_log("[ERRO] pytest nao encontrado. Instale com: pip install pytest")
             except Exception as e:
-                self._append_log(f"[ERRO] Falha na execução dos testes: {str(e)}")
+                self._append_log(f"[ERRO] Falha na execucao dos testes: {str(e)}")
                 
     def _show_about(self):
-        """Exibe informações sobre o QuarkDrive"""
+        """Exibe informacões sobre o QuarkDrive"""
         try:
-            # Criar janela de informações
+            # Criar janela de informacões
             with dpg.window(label="Sobre o QuarkDrive", width=400, height=300, modal=True, pos=(100, 100)):
                 dpg.add_text("QuarkDrive - Sistema de Arquivos Inteligente")
                 dpg.add_separator()
                 dpg.add_spacer(height=10)
-                dpg.add_text("Desenvolvido como projeto de demonstração")
-                dpg.add_text("Versão: 1.0.0")
+                dpg.add_text("Desenvolvido como projeto de demonstracao")
+                dpg.add_text("Versao: 1.0.0")
                 dpg.add_spacer(height=10)
                 dpg.add_text("Recursos:")
-                dpg.add_text("- Compressão de dados")
-                dpg.add_text("- Deduplicação de arquivos")
-                dpg.add_text("- Cache híbrido (RAM + SSD)")
+                dpg.add_text("- Compressao de dados")
+                dpg.add_text("- Deduplicacao de arquivos")
+                dpg.add_text("- Cache hibrido (RAM + SSD)")
                 dpg.add_text("- Montagem como sistema de arquivos")
                 dpg.add_spacer(height=20)
                 dpg.add_button(label="Fechar", callback=lambda: dpg.delete_item(dpg.last_container()))
                 
         except Exception as e:
-            self._append_log(f"[ERRO] Falha ao exibir informações: {str(e)}")
+            self._append_log(f"[ERRO] Falha ao exibir informacões: {str(e)}")
 
     def _update_status_icon(self, status):
-        """Atualizar o ícone e texto de status na interface"""
+        """Atualizar o icone e texto de status na interface"""
         try:
-            # Remover ícone atual
+            # Remover icone atual
             dpg.delete_item("status_group", children_only=True)
             
-            # Adicionar novo ícone e texto baseado no status
+            # Adicionar novo icone e texto baseado no status
             with dpg.group(horizontal=True, parent="status_group", tag="status_group_content"):
                 if status == "mounted":
                     dpg.add_image(self.icons['foguete'], width=16, height=16)
@@ -723,10 +723,10 @@ class QuarkDriveGUI:
                     dpg.add_image(self.icons['parar'], width=16, height=16)
                     dpg.add_text("Desmontado", tag="status_text", color=(255, 100, 100, 255))
         except Exception as e:
-            print(f"Erro ao atualizar ícone de status: {str(e)}")
+            print(f"Erro ao atualizar icone de status: {str(e)}")
 
 def main():
-    """Função principal para iniciar a GUI"""
+    """Funcao principal para iniciar a GUI"""
     app = QuarkDriveGUI()
     app.run()
 

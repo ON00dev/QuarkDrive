@@ -3,7 +3,7 @@ from .vfs_core import DedupCompressFS
 
 if __name__ == '__main__':
     if platform.system() == 'Windows':
-        print("Este script é apenas para Linux. No Windows, use o main.py")
+        print("Este script e apenas para Linux. No Windows, use o main.py")
         sys.exit(1)
         
     import sys
@@ -13,8 +13,8 @@ if __name__ == '__main__':
         print("Uso: python fuse_mount.py <ponto_de_montagem>")
         sys.exit(1)
         
-    mountpoint = sys.argv[1]  # Pasta onde será montado
-    backend = './backend_data'  # Pasta onde serão armazenados os dados comprimidos
+    mountpoint = sys.argv[1]  # Pasta onde sera montado
+    backend = './backend_data'  # Pasta onde serao armazenados os dados comprimidos
     
     import os
     if not os.path.exists(backend):

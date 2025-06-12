@@ -4,7 +4,7 @@ import sys
 import os
 import threading
 
-# Importar módulo correto baseado no SO
+# Importar modulo correto baseado no SO
 if platform.system() == 'Windows':
     from .windows_mount import mount_windows_filesystem, unmount_windows_filesystem, WindowsVFSMount
 else:
@@ -12,7 +12,7 @@ else:
 
 def mount_filesystem(mount_point, dedup=True, compress=True, cache=True):
     """
-    Monta o sistema de arquivos virtual com verificações adicionais.
+    Monta o sistema de arquivos virtual com verificacões adicionais.
     """
     import logging
     import traceback
@@ -21,19 +21,19 @@ def mount_filesystem(mount_point, dedup=True, compress=True, cache=True):
     backend = './backend_data'
     
     try:
-        # Verificar se o diretório de backend existe
+        # Verificar se o diretorio de backend existe
         if not os.path.exists(backend):
-            logger.info(f"Criando diretório de backend: {backend}")
+            logger.info(f"Criando diretorio de backend: {backend}")
             os.makedirs(backend)
         
         # Verificar permissões no Windows
         if platform.system() == 'Windows':
-            # Importar aqui para evitar erro de importação circular
+            # Importar aqui para evitar erro de importacao circular
             from .windows_mount import is_admin
             
             if not is_admin():
-                logger.error("Privilégios de administrador são necessários para montar unidades FUSE/Dokan")
-                print("❌ ERRO: Privilégios de administrador são necessários para montar unidades FUSE/Dokan")
+                logger.error("Privilegios de administrador sao necessarios para montar unidades FUSE/Dokan")
+                print("❌ ERRO: Privilegios de administrador sao necessarios para montar unidades FUSE/Dokan")
                 return None
         
         # Criar instância do sistema de arquivos
@@ -41,7 +41,7 @@ def mount_filesystem(mount_point, dedup=True, compress=True, cache=True):
         fs = DedupCompressFS(backend)
         
         if platform.system() == 'Windows':
-            # Windows: usar módulo customizado
+            # Windows: usar modulo customizado
             logger.info(f"Montando sistema de arquivos Windows em {mount_point}")
             
             # Criar callbacks com tratamento de erros
@@ -104,7 +104,7 @@ def mount_filesystem(mount_point, dedup=True, compress=True, cache=True):
                     logger.error("Timeout ao montar sistema de arquivos Windows")
                     return None
         else:
-            # Linux: usar FUSE (código existente)
+            # Linux: usar FUSE (codigo existente)
             def mount_thread():
                 FUSE(
                     fs,
@@ -131,7 +131,7 @@ def unmount_filesystem(mount_process):
     logger = logging.getLogger("QuarkDrive")
     
     if not mount_process:
-        logger.warning("Tentativa de desmontar um sistema não montado")
+        logger.warning("Tentativa de desmontar um sistema nao montado")
         return False
     
     try:
@@ -140,7 +140,7 @@ def unmount_filesystem(mount_process):
                 logger.info(f"Desmontando sistema Windows em {getattr(mount_process, 'mount_point', 'desconhecido')}")
                 return unmount_windows_filesystem(mount_process)
             else:
-                logger.error(f"Tipo de montagem inválido: {type(mount_process)}")
+                logger.error(f"Tipo de montagem invalido: {type(mount_process)}")
         else:
             if mount_process and hasattr(mount_process, 'is_alive') and mount_process.is_alive():
                 # Linux: usar fusermount
@@ -158,12 +158,12 @@ def unmount_filesystem(mount_process):
                 except subprocess.CalledProcessError as e:
                     logger.error(f"Erro ao executar fusermount: {e.stderr.decode() if e.stderr else str(e)}")
                 except Exception as e:
-                    logger.error(f"Exceção ao desmontar: {str(e)}")
+                    logger.error(f"Excecao ao desmontar: {str(e)}")
             else:
-                logger.warning("Thread de montagem não está ativa ou não é válida")
+                logger.warning("Thread de montagem nao esta ativa ou nao e valida")
     except Exception as e:
         import traceback
-        logger.error(f"Erro crítico na desmontagem: {str(e)}")
+        logger.error(f"Erro critico na desmontagem: {str(e)}")
         logger.debug(f"Detalhes do erro: {traceback.format_exc()}")
     
     return False

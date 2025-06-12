@@ -194,3 +194,47 @@ RuntimeError: Módulo winfuse não disponível
 2025-06-12 18:12:08,782 - QuarkDrive - INFO - Montando sistema de arquivos Windows em Q:
 2025-06-12 18:12:08,782 - QuarkDrive - INFO - Tentando importar o módulo winfuse...
 2025-06-12 18:12:08,782 - QuarkDrive - INFO - Iniciando montagem da unidade Q:
+2025-06-12 18:28:45,897 - root - INFO - Iniciando QuarkDrive
+2025-06-12 18:28:45,984 - root - INFO - Solicitando privilégios de administrador...
+2025-06-12 18:28:48,095 - root - INFO - Iniciando QuarkDrive
+2025-06-12 18:28:48,097 - root - INFO - Iniciando interface gráfica
+2025-06-12 18:28:55,428 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-12 18:28:55,428 - QuarkDrive - INFO - Montando sistema de arquivos Windows em Q:
+2025-06-12 18:28:55,428 - QuarkDrive - INFO - Tentando importar o módulo winfuse...
+2025-06-12 18:28:55,428 - QuarkDrive - INFO - Iniciando montagem da unidade Q:
+2025-06-12 18:34:37,839 - root - INFO - Iniciando QuarkDrive
+2025-06-12 18:34:37,869 - root - INFO - Solicitando privilégios de administrador...
+2025-06-12 18:34:40,380 - root - INFO - Iniciando QuarkDrive
+2025-06-12 18:34:40,382 - root - INFO - Iniciando interface gráfica
+2025-06-12 18:34:45,380 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-12 18:34:45,380 - QuarkDrive - INFO - Montando sistema de arquivos Windows em V:
+2025-06-12 18:34:45,380 - QuarkDrive - INFO - Tentando importar o módulo winfuse...
+2025-06-12 18:34:45,380 - QuarkDrive - INFO - Iniciando montagem da unidade V:
+2025-06-12 18:34:58,052 - root - INFO - Iniciando QuarkDrive
+2025-06-12 18:34:58,088 - root - INFO - Solicitando privilégios de administrador...
+2025-06-12 18:34:59,932 - root - INFO - Iniciando QuarkDrive
+2025-06-12 18:34:59,932 - root - INFO - Iniciando interface gráfica
+2025-06-12 18:35:04,009 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-12 18:35:04,009 - QuarkDrive - INFO - Montando sistema de arquivos Windows em Q:
+2025-06-12 18:35:04,009 - QuarkDrive - INFO - Tentando importar o módulo winfuse...
+2025-06-12 18:35:04,009 - QuarkDrive - INFO - Iniciando montagem da unidade Q:
+2025-06-12 19:01:07,382 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:01:07,439 - root - INFO - Solicitando privilégios de administrador...
+2025-06-12 19:01:09,540 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:01:09,540 - root - INFO - Iniciando interface gráfica
+2025-06-12 19:04:30,672 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:04:30,707 - root - INFO - Solicitando privilégios de administrador...
+2025-06-12 19:04:36,849 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:04:36,849 - root - INFO - Iniciando interface gráfica
+2025-06-12 19:06:58,615 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:06:58,682 - root - INFO - Solicitando privilegios de administrador...
+2025-06-12 19:07:04,746 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:07:04,746 - root - INFO - Iniciando interface grafica
+2025-06-12 19:07:34,683 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:07:34,710 - root - INFO - Solicitando privilegios de administrador...
+2025-06-12 19:07:40,815 - root - INFO - Iniciando QuarkDrive
+2025-06-12 19:07:40,816 - root - INFO - Iniciando interface grafica
+2025-06-12 19:07:54,081 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-12 19:07:54,089 - QuarkDrive - INFO - Montando sistema de arquivos Windows em T:
+2025-06-12 19:07:54,219 - QuarkDrive - INFO - Tentando importar o modulo winfuse...
+2025-06-12 19:07:54,220 - QuarkDrive - INFO - Iniciando montagem da unidade T:

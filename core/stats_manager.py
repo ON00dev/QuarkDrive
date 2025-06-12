@@ -6,13 +6,13 @@ class StatsManager:
     def __init__(self):
         self._lock = threading.Lock()
         
-        # Estatísticas básicas
+        # Estatisticas basicas
         self.space_saved_mb = 0
         self.cache_usage_percent = 0
         self.duplicated_files_count = 0
         self.compression_ratio = 0
         
-        # Estatísticas avançadas
+        # Estatisticas avancadas
         self.total_files = 0
         self.total_blobs = 0
         self.total_original_size = 0
@@ -23,7 +23,7 @@ class StatsManager:
         self.ssd_cache_size = 0
         self.last_update = time.time()
         
-        # Histórico de performance
+        # Historico de performance
         self.compression_history = []
         self.cache_hit_history = []
         
@@ -45,14 +45,14 @@ class StatsManager:
     def update_compression_ratio(self, ratio: float):
         with self._lock:
             self.compression_ratio = ratio
-            # Manter histórico dos últimos 100 valores
+            # Manter historico dos ultimos 100 valores
             self.compression_history.append(ratio)
             if len(self.compression_history) > 100:
                 self.compression_history.pop(0)
             self.last_update = time.time()
     
     def update_file_stats(self, total_files: int, total_blobs: int):
-        """Atualizar estatísticas de arquivos e blobs"""
+        """Atualizar estatisticas de arquivos e blobs"""
         with self._lock:
             self.total_files = total_files
             self.total_blobs = total_blobs
@@ -60,7 +60,7 @@ class StatsManager:
             self.last_update = time.time()
     
     def update_size_stats(self, original_size: int, compressed_size: int):
-        """Atualizar estatísticas de tamanho"""
+        """Atualizar estatisticas de tamanho"""
         with self._lock:
             self.total_original_size = original_size
             self.total_compressed_size = compressed_size
@@ -75,7 +75,7 @@ class StatsManager:
             self.last_update = time.time()
     
     def update_cache_stats(self, hits: int, misses: int, ram_size: int, ssd_size: int):
-        """Atualizar estatísticas de cache"""
+        """Atualizar estatisticas de cache"""
         with self._lock:
             self.cache_hits = hits
             self.cache_misses = misses
@@ -92,7 +92,7 @@ class StatsManager:
             self.last_update = time.time()
     
     def get_current_stats(self) -> Dict[str, Any]:
-        """Obter estatísticas atuais"""
+        """Obter estatisticas atuais"""
         with self._lock:
             return {
                 'space_saved': round(self.space_saved_mb, 2),
@@ -112,7 +112,7 @@ class StatsManager:
             }
     
     def get_performance_history(self) -> Dict[str, list]:
-        """Obter histórico de performance"""
+        """Obter historico de performance"""
         with self._lock:
             return {
                 'compression_history': self.compression_history.copy(),
@@ -120,7 +120,7 @@ class StatsManager:
             }
     
     def reset_stats(self):
-        """Resetar todas as estatísticas"""
+        """Resetar todas as estatisticas"""
         with self._lock:
             self.space_saved_mb = 0
             self.cache_usage_percent = 0

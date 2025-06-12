@@ -75,16 +75,16 @@ class MetadataDB:
         self.conn.close()
 
 
-# Adicionar estes métodos à classe MetadataDB:
+# Adicionar estes metodos à classe MetadataDB:
 
 def get_total_files(self):
-    """Obter número total de arquivos"""
+    """Obter numero total de arquivos"""
     cur = self.conn.cursor()
     cur.execute('SELECT COUNT(*) FROM files')
     return cur.fetchone()[0]
 
 def get_total_blobs(self):
-    """Obter número total de blobs únicos"""
+    """Obter numero total de blobs unicos"""
     cur = self.conn.cursor()
     cur.execute('SELECT COUNT(*) FROM blobs')
     return cur.fetchone()[0]
@@ -104,7 +104,7 @@ def get_total_compressed_size(self):
     return result if result else 0
 
 def get_duplicate_files_count(self):
-    """Obter número de arquivos duplicados"""
+    """Obter numero de arquivos duplicados"""
     cur = self.conn.cursor()
     cur.execute('''
         SELECT COUNT(*) FROM files f
@@ -114,7 +114,7 @@ def get_duplicate_files_count(self):
     return cur.fetchone()[0]
 
 def get_compression_stats(self):
-    """Obter estatísticas detalhadas de compressão"""
+    """Obter estatisticas detalhadas de compressao"""
     cur = self.conn.cursor()
     cur.execute('''
         SELECT 

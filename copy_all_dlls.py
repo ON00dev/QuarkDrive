@@ -3,38 +3,38 @@ import shutil
 import glob
 from pathlib import Path
 
-# Configuração do vcpkg
+# Configuracao do vcpkg
 VCPKG_ROOT = os.getenv('VCPKG_ROOT', 'C:\\vcpkg')
 VCPKG_INSTALLED_DIR = os.path.join(VCPKG_ROOT, 'installed', 'x64-windows-static')
 
-# Configuração do Dokan SDK
+# Configuracao do Dokan SDK
 DOKAN_SDK_PATH = 'C:\\Program Files\\Dokan\\Dokan Library-2.3.0'
 DOKAN_INCLUDE_DIR = os.path.join(DOKAN_SDK_PATH, 'include')
 DOKAN_LIB_DIR = os.path.join(DOKAN_SDK_PATH, 'lib')
 DOKAN_DRIVER_DIR = os.path.join(DOKAN_SDK_PATH, 'driver')
 
-# Diretórios destino
+# Diretorios destino
 dest_lib_dir = Path("lib")
 dest_include_dir = Path("include")
 dest_driver_dir = Path("driver")
 
 # Verificar se vcpkg existe
 if not os.path.exists(VCPKG_ROOT):
-    print(f"ERRO: vcpkg não encontrado em: {VCPKG_ROOT}")
-    print("Defina a variável VCPKG_ROOT ou instale o vcpkg em C:\\vcpkg")
+    print(f"ERRO: vcpkg nao encontrado em: {VCPKG_ROOT}")
+    print("Defina a variavel VCPKG_ROOT ou instale o vcpkg em C:\\vcpkg")
     exit(1)
 
 if not os.path.exists(VCPKG_INSTALLED_DIR):
-    print(f"ERRO: Diretório installed vcpkg não encontrado: {VCPKG_INSTALLED_DIR}")
+    print(f"ERRO: Diretorio installed vcpkg nao encontrado: {VCPKG_INSTALLED_DIR}")
     exit(1)
 
 # Verificar se Dokan SDK existe
 if not os.path.exists(DOKAN_SDK_PATH):
-    print(f"ERRO: Dokan SDK não encontrado em: {DOKAN_SDK_PATH}")
+    print(f"ERRO: Dokan SDK nao encontrado em: {DOKAN_SDK_PATH}")
     print("Instale o Dokan SDK ou ajuste o caminho DOKAN_SDK_PATH")
     exit(1)
 
-# Criar diretórios destino se não existirem
+# Criar diretorios destino se nao existirem
 dest_lib_dir.mkdir(exist_ok=True)
 dest_include_dir.mkdir(exist_ok=True)
 dest_driver_dir.mkdir(exist_ok=True)
@@ -73,20 +73,20 @@ def copy_dokan_files():
             except Exception as e:
                 print(f"   ✗ Erro ao copiar {lib_file.name}: {e}")
     else:
-        print(f"   ⚠ Pasta lib do Dokan não encontrada: {DOKAN_LIB_DIR}")
+        print(f"   ⚠ Pasta lib do Dokan nao encontrada: {DOKAN_LIB_DIR}")
     
     # Copiar headers do Dokan
     if os.path.exists(DOKAN_INCLUDE_DIR):
         print(f"   Copiando headers Dokan de: {DOKAN_INCLUDE_DIR}")
         dokan_include_src = Path(DOKAN_INCLUDE_DIR)
         
-        # Copiar toda a estrutura de diretórios do include do Dokan
+        # Copiar toda a estrutura de diretorios do include do Dokan
         for header_file in dokan_include_src.rglob('*.h'):
             # Manter estrutura relativa
             relative_path = header_file.relative_to(dokan_include_src)
             dest_file = dest_include_dir / relative_path
             
-            # Criar diretórios pais se necessário
+            # Criar diretorios pais se necessario
             dest_file.parent.mkdir(parents=True, exist_ok=True)
             
             try:
@@ -96,7 +96,7 @@ def copy_dokan_files():
             except Exception as e:
                 print(f"   ✗ Erro ao copiar {relative_path}: {e}")
     else:
-        print(f"   ⚠ Pasta include do Dokan não encontrada: {DOKAN_INCLUDE_DIR}")
+        print(f"   ⚠ Pasta include do Dokan nao encontrada: {DOKAN_INCLUDE_DIR}")
     
     return copied_libs, copied_headers
 
@@ -108,14 +108,14 @@ def copy_dokan_driver_files():
         print(f"   Copiando arquivos do driver Dokan de: {DOKAN_DRIVER_DIR}")
         dokan_driver_src = Path(DOKAN_DRIVER_DIR)
         
-        # Copiar todos os arquivos do diretório driver
+        # Copiar todos os arquivos do diretorio driver
         for driver_file in dokan_driver_src.rglob('*'):
             if driver_file.is_file():
                 # Manter estrutura relativa
                 relative_path = driver_file.relative_to(dokan_driver_src)
                 dest_file = dest_driver_dir / relative_path
                 
-                # Criar diretórios pais se necessário
+                # Criar diretorios pais se necessario
                 dest_file.parent.mkdir(parents=True, exist_ok=True)
                 
                 try:
@@ -125,7 +125,7 @@ def copy_dokan_driver_files():
                 except Exception as e:
                     print(f"   ✗ Erro ao copiar driver/{relative_path}: {e}")
     else:
-        print(f"   ⚠ Pasta driver do Dokan não encontrada: {DOKAN_DRIVER_DIR}")
+        print(f"   ⚠ Pasta driver do Dokan nao encontrada: {DOKAN_DRIVER_DIR}")
     
     return copied_driver_files
 
@@ -135,11 +135,11 @@ def copy_vcpkg_files():
     vcpkg_include_dir = Path(VCPKG_INSTALLED_DIR) / 'include'
     
     if not vcpkg_lib_dir.exists():
-        print(f"⚠ Pasta lib não encontrada: {vcpkg_lib_dir}")
+        print(f"⚠ Pasta lib nao encontrada: {vcpkg_lib_dir}")
         return 0, 0
     
     if not vcpkg_include_dir.exists():
-        print(f"⚠ Pasta include não encontrada: {vcpkg_include_dir}")
+        print(f"⚠ Pasta include nao encontrada: {vcpkg_include_dir}")
         return 0, 0
     
     copied_libs = 0
@@ -171,10 +171,10 @@ def copy_vcpkg_files():
             except Exception as e:
                 print(f"   ✗ Erro ao copiar pkgconfig/{pc_file.name}: {e}")
     
-    # Copiar headers - apenas arquivos .h diretamente, não pastas
+    # Copiar headers - apenas arquivos .h diretamente, nao pastas
     print(f"   Copiando headers de: {vcpkg_include_dir}")
     
-    # Copiar arquivos .h do diretório raiz
+    # Copiar arquivos .h do diretorio raiz
     for header_file in vcpkg_include_dir.glob('*.h'):
         dest_file = dest_include_dir / header_file.name
         try:
@@ -184,13 +184,13 @@ def copy_vcpkg_files():
         except Exception as e:
             print(f"   ✗ Erro ao copiar {header_file.name}: {e}")
     
-    # Copiar headers de subpastas específicas, mas colocando os arquivos .h diretamente no include
+    # Copiar headers de subpastas especificas, mas colocando os arquivos .h diretamente no include
     header_subdirs = ['brotli', 'lzma', 'openssl']
     for subdir in header_subdirs:
         subdir_path = vcpkg_include_dir / subdir
         if subdir_path.exists():
-            print(f"   Processando subdiretório: {subdir}")
-            # Criar subpasta no destino para manter organização
+            print(f"   Processando subdiretorio: {subdir}")
+            # Criar subpasta no destino para manter organizacao
             dest_subdir = dest_include_dir / subdir
             dest_subdir.mkdir(exist_ok=True)
             
@@ -199,7 +199,7 @@ def copy_vcpkg_files():
                 relative_path = header_file.relative_to(subdir_path)
                 dest_file = dest_subdir / relative_path
                 
-                # Criar diretórios pais se necessário
+                # Criar diretorios pais se necessario
                 dest_file.parent.mkdir(parents=True, exist_ok=True)
                 
                 try:
@@ -242,5 +242,5 @@ if (total_libs_vcpkg + total_libs_dokan) > 0 and (total_headers_vcpkg + total_he
     print(f"   python compile_extensions.py")
 else:
     print(f"\n⚠ Alguns arquivos podem estar faltando.")
-    print(f"   Verifique se os pacotes estão instalados com:")
+    print(f"   Verifique se os pacotes estao instalados com:")
     print(f"   vcpkg list")

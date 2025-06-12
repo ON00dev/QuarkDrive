@@ -59,7 +59,7 @@ public:
         return bytes_to_hex(hash, MD5_DIGEST_LENGTH);
     }
     
-    // XXHash (muito rápido para deduplicação)
+    // XXHash (muito rapido para deduplicacao)
     static uint64_t xxhash64(const std::vector<uint8_t>& data, uint64_t seed = 0) {
         return XXH64(data.data(), data.size(), seed);
     }
@@ -169,7 +169,7 @@ private:
     }
 };
 
-// Funções utilitárias
+// Funcões utilitarias
 std::string quick_sha256(const std::vector<uint8_t>& data) {
     return FastHasher::sha256(data);
 }
@@ -209,7 +209,7 @@ PYBIND11_MODULE(hash_module, m) {
         .def("finalize_sha256", &FastHasher::IncrementalHasher::finalize_sha256, "Finalize and get SHA-256 hash")
         .def("finalize_xxhash", &FastHasher::IncrementalHasher::finalize_xxhash, "Finalize and get XXHash");
     
-    // Funções utilitárias
+    // Funcões utilitarias
     m.def("quick_sha256", &quick_sha256, "Quick SHA-256 hash function");
     m.def("quick_sha256_file", &quick_sha256_file, "Quick SHA-256 file hash function");
     m.def("quick_xxhash", &quick_xxhash, "Quick XXHash function");

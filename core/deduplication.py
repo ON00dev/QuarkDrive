@@ -6,7 +6,7 @@ def calculate_file_hash(file_path, chunk_size=4 * 1024 * 1024):
     Calcula o hash SHA-256 de um arquivo.
 
     :param file_path: Caminho do arquivo
-    :param chunk_size: Tamanho dos blocos para leitura (4MB padrão)
+    :param chunk_size: Tamanho dos blocos para leitura (4MB padrao)
     :return: Hash SHA-256 em hexadecimal
     """
     sha256 = hashlib.sha256()

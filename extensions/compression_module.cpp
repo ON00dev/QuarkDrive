@@ -94,7 +94,7 @@ public:
     }
 };
 
-// Funções utilitárias para compressão rápida
+// Funcões utilitarias para compressao rapida
 std::vector<uint8_t> fast_compress(const std::vector<uint8_t>& data, int level = 5) {
     FastCompressor compressor(level);
     return compressor.compress(data);

@@ -9,7 +9,7 @@ class HybridCache:
     """
     Cache inteligente: RAM (LRU Adaptativo) + SSD (persistente) + Write-Back.
     """
-    # Adicionar estes métodos à classe HybridCache:
+    # Adicionar estes metodos à classe HybridCache:
 
     def __init__(self, ram_limit_ratio=0.1, ssd_folder='./cache_ssd', write_back_delay=2.0):
         # Limite dinâmico da RAM
@@ -27,7 +27,7 @@ class HybridCache:
         self.write_back_queue = set()
         self._start_write_back_thread()
         
-        # Estatísticas de cache
+        # Estatisticas de cache
         self.cache_hits = 0
         self.cache_misses = 0
         self.ram_hits = 0
@@ -110,7 +110,7 @@ class HybridCache:
             return 0
 
     def get_cache_stats(self):
-        """Obter estatísticas detalhadas do cache"""
+        """Obter estatisticas detalhadas do cache"""
         with self.lock:
             total_requests = self.cache_hits + self.cache_misses
             hit_rate = (self.cache_hits / max(1, total_requests)) * 100
@@ -139,7 +139,7 @@ class HybridCache:
             }
 
     def get(self, key):
-        """Método get modificado para rastrear estatísticas"""
+        """Metodo get modificado para rastrear estatisticas"""
         data = self.get_from_ram(key)
         if data:
             with self.lock:
@@ -160,7 +160,7 @@ class HybridCache:
         return None, None
 
     def reset_stats(self):
-        """Resetar estatísticas do cache"""
+        """Resetar estatisticas do cache"""
         with self.lock:
             self.cache_hits = 0
             self.cache_misses = 0
@@ -168,4 +168,4 @@ class HybridCache:
             self.ssd_hits = 0
     def add(self, key, data: bytes):
         self.add_to_ram(key, data)
-        self.write_back_queue.add(key)  # adia gravação no SSD
+        self.write_back_queue.add(key)  # adia gravacao no SSD

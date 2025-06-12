@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 QuarkDrive - Sistema de Armazenamento Otimizado
-Ponto de entrada principal da aplicação
+Ponto de entrada principal da aplicacao
 """
 
 import sys
@@ -12,20 +12,53 @@ import dearpygui.dearpygui as dpg
 from pathlib import Path
 import platform
 import logging
+import subprocess
 from gui.main_window import main as gui_main
 
-# Adicionar o diretório raiz ao path para imports
+# Adicionar o diretorio raiz ao path para imports
 sys.path.insert(0, str(Path(__file__).parent))
-# Adicionar pasta lib ao path de importação para módulos C++
+
+# Definir a funcao is_admin antes de usa-la
+def is_admin():
+    """Verifica se o programa esta sendo executado como administrador"""
+    if platform.system() == 'Windows':
+        try:
+            # Primeiro tentar usar o modulo winfuse se disponivel
+            try:
+                from fs.windows_mount import is_admin as winfuse_is_admin
+                return winfuse_is_admin()
+            except ImportError:
+                pass
+            
+            # Fallback para metodo padrao
+            import ctypes
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        except:
+            return False
+    else:
+        # No Linux, verificar se e root
+        return os.geteuid() == 0
+
+# Adicionar pasta lib ao path de importacao para modulos C++
 if platform.system() == "Windows":
+    # Executar o dokan_to_path.bat para configurar o ambiente
+    setup_bat = str(Path(__file__).parent / "dokan_to_path.bat")
+    try:
+        if is_admin():
+            subprocess.run([setup_bat], shell=True, check=False)
+        else:
+            print("Aviso: Execute o programa como administrador para configurar o driver Dokan corretamente.")
+    except Exception as e:
+        print(f"Erro ao executar dokan_to_path.bat: {e}")
+    
     lib_path = str(Path(__file__).parent / "lib")
-    # Adicionar site-packages ao sys.path para encontrar os módulos .pyd
+    # Adicionar site-packages ao sys.path para encontrar os modulos .pyd
     site_packages_path = str(Path(__file__).parent / "lib" / "site-packages")
     sys.path.insert(0, site_packages_path)
     
     os.add_dll_directory(lib_path)
     # Linha do mingw removida
-    # Também adicionar ao PATH do sistema para garantia
+    # Tambem adicionar ao PATH do sistema para garantia
     os.environ['PATH'] = lib_path + os.pathsep + os.environ.get('PATH', '')
 
 def setup_logging():
@@ -44,28 +77,8 @@ def setup_logging():
         ]
     )
 
-def is_admin():
-    """Verifica se o programa está sendo executado como administrador"""
-    if platform.system() == 'Windows':
-        try:
-            # Primeiro tentar usar o módulo winfuse se disponível
-            try:
-                from fs.windows_mount import is_admin as winfuse_is_admin
-                return winfuse_is_admin()
-            except ImportError:
-                pass
-            
-            # Fallback para método padrão
-            import ctypes
-            return ctypes.windll.shell32.IsUserAnAdmin() != 0
-        except:
-            return False
-    else:
-        # No Linux, verificar se é root
-        return os.geteuid() == 0
-
 def run_as_admin():
-    """Reinicia o programa com privilégios de administrador"""
+    """Reinicia o programa com privilegios de administrador"""
     if platform.system() == 'Windows':
         import ctypes
         import win32con
@@ -74,9 +87,9 @@ def run_as_admin():
         from win32com.shell.shell import ShellExecuteEx
         from win32com.shell import shellcon
         
-        logging.info("Solicitando privilégios de administrador...")
+        logging.info("Solicitando privilegios de administrador...")
         
-        # Obter o caminho do executável Python
+        # Obter o caminho do executavel Python
         python_exe = sys.executable
         script = os.path.abspath(sys.argv[0])
         
@@ -85,14 +98,14 @@ def run_as_admin():
             ShellExecuteEx(
                 nShow=win32con.SW_SHOWNORMAL,
                 fMask=shellcon.SEE_MASK_NOCLOSEPROCESS,
-                lpVerb='runas',  # Solicitar elevação
+                lpVerb='runas',  # Solicitar elevacao
                 lpFile=python_exe,
                 lpParameters=f'"{script}"'
             )
             sys.exit(0)  # Sair do processo atual
         except Exception as e:
-            logging.error(f"Falha ao solicitar privilégios de administrador: {str(e)}")
-            print(f"❌ ERRO: Falha ao solicitar privilégios de administrador: {str(e)}")
+            logging.error(f"Falha ao solicitar privilegios de administrador: {str(e)}")
+            print(f"❌ ERRO: Falha ao solicitar privilegios de administrador: {str(e)}")
             return False
     else:
         # No Linux, sugerir usar sudo
@@ -100,18 +113,18 @@ def run_as_admin():
         return False
 
 def main():
-    """Função principal do aplicativo"""
+    """Funcao principal do aplicativo"""
     setup_logging()
     logging.info("Iniciando QuarkDrive")
     
-    # Verificar privilégios de administrador
+    # Verificar privilegios de administrador
     if not is_admin():
-        print("QuarkDrive precisa de privilégios de administrador para montar unidades virtuais.")
-        print("Solicitando elevação de privilégios...")
+        print("QuarkDrive precisa de privilegios de administrador para montar unidades virtuais.")
+        print("Solicitando elevacao de privilegios...")
         return run_as_admin()
     
     # Iniciar a GUI
-    logging.info("Iniciando interface gráfica")
+    logging.info("Iniciando interface grafica")
     gui_main()
 
 if __name__ == "__main__":

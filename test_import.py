@@ -13,10 +13,10 @@ os.add_dll_directory(lib_path)
 
 try:
     import winfuse
-    print("Importação bem-sucedida!")
-    print(f"Módulo winfuse: {winfuse}")
-    print(f"Diretório do módulo: {winfuse.__file__}")
-    # Listar funções e classes disponíveis
-    print(f"Conteúdo do módulo: {dir(winfuse)}")
+    print("Importacao bem-sucedida!")
+    print(f"Modulo winfuse: {winfuse}")
+    print(f"Diretorio do modulo: {winfuse.__file__}")
+    # Listar funcões e classes disponiveis
+    print(f"Conteudo do modulo: {dir(winfuse)}")
 except Exception as e:
     print(f"Erro ao importar winfuse: {e}")

@@ -8,19 +8,19 @@ from concurrent.futures import ThreadPoolExecutor
 import sys
 from pathlib import Path
 
-# Variável global para armazenar o módulo winfuse
+# Variavel global para armazenar o modulo winfuse
 winfuse = None
 
-# Função para importar o módulo winfuse quando necessário
+# Funcao para importar o modulo winfuse quando necessario
 def import_winfuse():
     global winfuse
     if winfuse is None and platform.system() == 'Windows':
         try:
-            # Configurar caminhos para garantir que o módulo seja encontrado
+            # Configurar caminhos para garantir que o modulo seja encontrado
             lib_path = str(Path(__file__).parent.parent / "lib")
             site_packages_path = str(Path(__file__).parent.parent / "lib" / "site-packages")
             
-            # Adicionar ao sys.path se ainda não estiver lá
+            # Adicionar ao sys.path se ainda nao estiver la
             if site_packages_path not in sys.path:
                 sys.path.insert(0, site_packages_path)
             
@@ -31,19 +31,19 @@ def import_winfuse():
                 # Para versões mais antigas do Python sem add_dll_directory
                 os.environ['PATH'] = lib_path + os.pathsep + os.environ.get('PATH', '')
                 
-            # Agora tenta importar o módulo
+            # Agora tenta importar o modulo
             import winfuse as winfuse_module
             winfuse = winfuse_module
             return winfuse_module
         except ImportError as e:
-            print(f"ERRO: winfuse não compilado! Detalhes: {e}")
+            print(f"ERRO: winfuse nao compilado! Detalhes: {e}")
             return None
         except Exception as e:
             print(f"ERRO: Falha ao inicializar winfuse! Detalhes: {e}")
             return None
     return winfuse
 
-# Definir a função is_admin usando importação tardia
+# Definir a funcao is_admin usando importacao tardia
 def is_admin():
     try:
         if platform.system() == 'Windows':
@@ -54,7 +54,7 @@ def is_admin():
                 import ctypes
                 return ctypes.windll.shell32.IsUserAnAdmin() != 0
         else:
-            # Em sistemas não-Windows, verificar se é root (uid 0)
+            # Em sistemas nao-Windows, verificar se e root (uid 0)
             return os.geteuid() == 0
     except:
         return False
@@ -73,7 +73,7 @@ class ThreadSafeWindowsVFS:
                                list_func: Callable[[str], list],
                                exists_func: Callable[[str], bool],
                                size_func: Callable[[str], int]):
-        """Define callbacks thread-safe para operações do sistema de arquivos"""
+        """Define callbacks thread-safe para operacões do sistema de arquivos"""
         
         # Wrapper thread-safe para callbacks
         def safe_read(path: str) -> bytes:
@@ -124,9 +124,9 @@ class ThreadSafeWindowsVFS:
         }
     
     def mount(self, drive_letter: str) -> bool:
-        """Monta a unidade virtual com proteção thread-safe"""
+        """Monta a unidade virtual com protecao thread-safe"""
         if not winfuse:
-            raise RuntimeError("Módulo winfuse não disponível")
+            raise RuntimeError("Modulo winfuse nao disponivel")
             
         if self.is_mounted:
             return False
@@ -168,7 +168,7 @@ class ThreadSafeWindowsVFS:
             success = winfuse.unmount_drive(self.mount_point)
             
             if success:
-                print(f"[✓] Unidade {self.mount_point} desmontada com segurança!")
+                print(f"[✓] Unidade {self.mount_point} desmontada com seguranca!")
                 self.mount_point = None
                 self.is_mounted = False
                 return True
@@ -181,7 +181,7 @@ class ThreadSafeWindowsVFS:
             return False
     
     def __del__(self):
-        """Cleanup automático"""
+        """Cleanup automatico"""
         if self.is_mounted:
             self.unmount()
         self.callback_executor.shutdown(wait=True)
@@ -200,7 +200,7 @@ class WindowsVFSMount:
                                list_func: Callable[[str], list],
                                exists_func: Callable[[str], bool],
                                size_func: Callable[[str], int]):
-        """Define as funções de callback para operações do sistema de arquivos"""
+        """Define as funcões de callback para operacões do sistema de arquivos"""
         self.vfs_callbacks = {
             'read': read_func,
             'write': write_func,
@@ -215,21 +215,21 @@ class WindowsVFSMount:
         logger = logging.getLogger("QuarkDrive")
         
         if platform.system() != 'Windows':
-            raise RuntimeError("WindowsVFSMount só funciona no Windows")
+            raise RuntimeError("WindowsVFSMount so funciona no Windows")
             
-        # Tentar importar o módulo winfuse
-        logger.info("Tentando importar o módulo winfuse...")
+        # Tentar importar o modulo winfuse
+        logger.info("Tentando importar o modulo winfuse...")
         winfuse_module = import_winfuse()
         if not winfuse_module:
-            raise RuntimeError("Módulo winfuse não disponível")
+            raise RuntimeError("Modulo winfuse nao disponivel")
             
         if self.is_mounted:
-            logger.warning("Sistema já está montado")
+            logger.warning("Sistema ja esta montado")
             return False
         
-        # Verificar privilégios de administrador
+        # Verificar privilegios de administrador
         if not is_admin():
-            error_msg = "ERRO: Privilégios de administrador são necessários para montar unidades FUSE/Dokan"
+            error_msg = "ERRO: Privilegios de administrador sao necessarios para montar unidades FUSE/Dokan"
             logger.error(error_msg)
             print(f"[X] {error_msg}")
             return False
@@ -240,21 +240,21 @@ class WindowsVFSMount:
         try:
             logger.info(f"Iniciando montagem da unidade {drive}:")
             
-            # Verificar se a unidade já está em uso pelo sistema
+            # Verificar se a unidade ja esta em uso pelo sistema
             import ctypes
             drives_bitmask = ctypes.windll.kernel32.GetLogicalDrives()
             drive_letter_value = ord(drive) - ord('A')
             if (drives_bitmask & (1 << drive_letter_value)):
-                error_msg = f"A unidade {drive}: já está em uso pelo sistema"
+                error_msg = f"A unidade {drive}: ja esta em uso pelo sistema"
                 logger.error(error_msg)
                 print(f"[X] {error_msg}")
                 return False
             
-            # Montar usando o módulo C++
+            # Montar usando o modulo C++
             success = winfuse.mount_drive(drive + ":", self.backend_path)
             
             if not success:
-                # Verificar se há um erro específico
+                # Verificar se ha um erro especifico
                 if hasattr(winfuse, 'get_last_error'):
                     error_msg = winfuse.get_last_error()
                     logger.error(f"Falha na montagem: {error_msg}")
@@ -295,7 +295,7 @@ class WindowsVFSMount:
                 
         except Exception as e:
             import traceback
-            logger.error(f"Exceção ao montar: {str(e)}")
+            logger.error(f"Excecao ao montar: {str(e)}")
             logger.debug(traceback.format_exc())
             print(f"[X] Erro ao montar: {str(e)}")
             return False
@@ -306,7 +306,7 @@ class WindowsVFSMount:
         logger = logging.getLogger("QuarkDrive")
         
         if not self.is_mounted or not self.mount_point:
-            logger.warning("Tentativa de desmontar sistema não montado")
+            logger.warning("Tentativa de desmontar sistema nao montado")
             return False
             
         try:
@@ -321,7 +321,7 @@ class WindowsVFSMount:
                 self.is_mounted = False
                 return True
             else:
-                # Verificar se há um erro específico
+                # Verificar se ha um erro especifico
                 if hasattr(winfuse, 'get_last_error'):
                     error_msg = winfuse.get_last_error()
                     logger.error(f"Falha na desmontagem: {error_msg}")
@@ -333,7 +333,7 @@ class WindowsVFSMount:
                 
         except Exception as e:
             import traceback
-            logger.error(f"Exceção ao desmontar: {str(e)}")
+            logger.error(f"Excecao ao desmontar: {str(e)}")
             logger.debug(traceback.format_exc())
             print(f"[X] Erro ao desmontar: {str(e)}")
             return False
@@ -345,13 +345,13 @@ class WindowsVFSMount:
         return winfuse.get_mounted_drives()
     
     def is_active(self) -> bool:
-        """Verifica se a montagem está ativa"""
+        """Verifica se a montagem esta ativa"""
         return self.is_mounted
 
-# Funções de conveniência
+# Funcões de conveniência
 def mount_windows_filesystem(mount_point: str, backend_path: str, 
                            filesystem_callbacks: dict) -> Optional[WindowsVFSMount]:
-    """Função de conveniência para montar sistema de arquivos Windows"""
+    """Funcao de conveniência para montar sistema de arquivos Windows"""
     vfs = WindowsVFSMount(backend_path)
     
     if filesystem_callbacks:
@@ -368,16 +368,16 @@ def mount_windows_filesystem(mount_point: str, backend_path: str,
     return None
 
 def unmount_windows_filesystem(vfs_mount: WindowsVFSMount) -> bool:
-    """Função de conveniência para desmontar sistema de arquivos Windows"""
+    """Funcao de conveniência para desmontar sistema de arquivos Windows"""
     import logging
     logger = logging.getLogger("QuarkDrive")
     
     if not vfs_mount:
-        logger.warning("Tentativa de desmontar um sistema não montado")
+        logger.warning("Tentativa de desmontar um sistema nao montado")
         return False
     
     try:
-        # Registrar informações de diagnóstico antes da desmontagem
+        # Registrar informacões de diagnostico antes da desmontagem
         mount_point = getattr(vfs_mount, 'mount_point', 'desconhecido')
         is_mounted = getattr(vfs_mount, 'is_mounted', False)
         logger.info(f"Desmontando Windows VFS: {mount_point} (montado: {is_mounted})")

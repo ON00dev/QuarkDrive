@@ -11,13 +11,13 @@
 #include <thread>
 #include <iostream>
 
-// Adicionar no início do arquivo, após as inclusões existentes
+// Adicionar no inicio do arquivo, apos as inclusões existentes
 #include <sstream>
 #include <fstream>
 #include <chrono>
 #include <atomic>
 
-// Função de utilidade para converter wstring para string UTF-8
+// Funcao de utilidade para converter wstring para string UTF-8
 static std::string wstring_to_utf8(const std::wstring& wstr) {
     if (wstr.empty()) return std::string();
     
@@ -27,7 +27,7 @@ static std::string wstring_to_utf8(const std::wstring& wstr) {
     return str;
 }
 
-// Função de utilidade para converter LPCWSTR para string UTF-8
+// Funcao de utilidade para converter LPCWSTR para string UTF-8
 static std::string wchar_to_utf8(LPCWSTR wstr) {
     if (!wstr) return std::string();
     return wstring_to_utf8(std::wstring(wstr));
@@ -35,13 +35,13 @@ static std::string wchar_to_utf8(LPCWSTR wstr) {
 
 namespace py = pybind11;
 
-// Variáveis globais para controle de erros e logging
+// Variaveis globais para controle de erros e logging
 static std::atomic<bool> g_mount_in_progress(false);
 static std::atomic<bool> g_mount_success(false);
 static std::string g_last_error;
 static std::ofstream g_log_file;
 
-// Função para logging seguro
+// Funcao para logging seguro
 static void log_message(const std::string& message) {
     try {
         if (!g_log_file.is_open()) {
@@ -59,24 +59,24 @@ static void log_message(const std::string& message) {
         g_log_file << time_str << " - " << message << std::endl;
         g_log_file.flush();
         
-        // Também enviar para stderr para captura pelo Python
+        // Tambem enviar para stderr para captura pelo Python
         std::cerr << time_str << " - " << message << std::endl;
     } catch (...) {
-        // Não propagar exceções do logging
+        // Nao propagar excecões do logging
     }
 }
 
-// Declaração antecipada da classe
+// Declaracao antecipada da classe
 class DokanyVFS;
 
 // Mapa global para armazenar instâncias de DokanyVFS por letra de unidade
 static std::map<std::string, std::shared_ptr<DokanyVFS>> g_mounts;
 
-// Protótipos das funções auxiliares
+// Prototipos das funcões auxiliares
 static DokanyVFS* GetVFSInstance(PDOKAN_FILE_INFO DokanFileInfo);
 static std::string ConvertFileName(LPCWSTR FileName);
 
-// Protótipos dos callbacks Dokany
+// Prototipos dos callbacks Dokany
 static NTSTATUS DOKAN_CALLBACK GetVolumeInformation(
     LPWSTR VolumeNameBuffer,
     DWORD VolumeNameSize,
@@ -145,21 +145,21 @@ public:
         if (vfs->exists_callback) {
             try {
                 bool exists = vfs->exists_callback(path);
-                DokanFileInfo->IsDirectory = FALSE; // Simplificado, deveria verificar se é diretório
+                DokanFileInfo->IsDirectory = FALSE; // Simplificado, deveria verificar se e diretorio
                 
-                // Se o arquivo não existe e estamos tentando abri-lo para leitura, falhar
+                // Se o arquivo nao existe e estamos tentando abri-lo para leitura, falhar
                 if (!exists && !(CreateDisposition == FILE_CREATE || CreateDisposition == FILE_OPEN_IF)) {
                     return STATUS_OBJECT_NAME_NOT_FOUND;
                 }
                 
                 return STATUS_SUCCESS;
             } catch (const std::exception& e) {
-                // Lidar com exceções do Python
+                // Lidar com excecões do Python
                 return STATUS_UNSUCCESSFUL;
             }
         }
         
-        // Fallback se não houver callback
+        // Fallback se nao houver callback
         DokanFileInfo->IsDirectory = FALSE;
         return STATUS_SUCCESS;
     }
@@ -203,13 +203,13 @@ public:
                 
                 return STATUS_SUCCESS;
             } catch (const std::exception& e) {
-                // Lidar com exceções do Python
+                // Lidar com excecões do Python
                 *ReadLength = 0;
                 return STATUS_UNSUCCESSFUL;
             }
         }
         
-        // Fallback se não houver callback
+        // Fallback se nao houver callback
         *ReadLength = 0;
         return STATUS_SUCCESS;
     }
@@ -240,13 +240,13 @@ public:
                 *NumberOfBytesWritten = NumberOfBytesToWrite;
                 return STATUS_SUCCESS;
             } catch (const std::exception& e) {
-                // Lidar com exceções do Python
+                // Lidar com excecões do Python
                 *NumberOfBytesWritten = 0;
                 return STATUS_UNSUCCESSFUL;
             }
         }
         
-        // Fallback se não houver callback
+        // Fallback se nao houver callback
         *NumberOfBytesWritten = NumberOfBytesToWrite;
         return STATUS_SUCCESS;
     }
@@ -279,7 +279,7 @@ public:
                     // Configurar como arquivo normal
                     find_data.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
                     
-                    // Obter tamanho do arquivo se possível
+                    // Obter tamanho do arquivo se possivel
                     if (vfs->size_callback) {
                         try {
                             size_t size = vfs->size_callback(path + "/" + file);
@@ -296,12 +296,12 @@ public:
                 
                 return STATUS_SUCCESS;
             } catch (const std::exception& e) {
-                // Lidar com exceções do Python
+                // Lidar com excecões do Python
                 return STATUS_UNSUCCESSFUL;
             }
         }
         
-        // Fallback se não houver callback
+        // Fallback se nao houver callback
         return STATUS_SUCCESS;
     }
         
@@ -326,7 +326,7 @@ public:
                     return STATUS_OBJECT_NAME_NOT_FOUND;
                 }
                 
-                // Configurar informações básicas do arquivo
+                // Configurar informacões basicas do arquivo
                 ZeroMemory(HandleFileInformation, sizeof(BY_HANDLE_FILE_INFORMATION));
                 HandleFileInformation->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
                 
@@ -344,12 +344,12 @@ public:
                 
                 return STATUS_SUCCESS;
             } catch (const std::exception& e) {
-                // Lidar com exceções do Python
+                // Lidar com excecões do Python
                 return STATUS_UNSUCCESSFUL;
             }
         }
         
-        // Fallback se não houver callbacks
+        // Fallback se nao houver callbacks
         ZeroMemory(HandleFileInformation, sizeof(BY_HANDLE_FILE_INFORMATION));
         HandleFileInformation->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
         HandleFileInformation->nFileSizeLow = 0;
@@ -367,33 +367,33 @@ public:
     static void DOKAN_CALLBACK Cleanup(
         LPCWSTR FileName,
         PDOKAN_FILE_INFO DokanFileInfo) {
-        // Cleanup básico
+        // Cleanup basico
     }
     
     static void DOKAN_CALLBACK CloseFile(
         LPCWSTR FileName,
         PDOKAN_FILE_INFO DokanFileInfo) {
-        // Close básico
+        // Close basico
     }
     
     bool mount(const std::string& drive_letter) {
         try {
             if (is_mounted) {
-                log_message("Tentativa de montar unidade já montada: " + drive_letter);
+                log_message("Tentativa de montar unidade ja montada: " + drive_letter);
                 return false;
             }
             
-            // Verificar se a letra de unidade é válida
+            // Verificar se a letra de unidade e valida
             if (drive_letter.empty() || drive_letter.length() > 2) {
-                g_last_error = "Letra de unidade inválida: " + drive_letter;
+                g_last_error = "Letra de unidade invalida: " + drive_letter;
                 log_message(g_last_error);
                 return false;
             }
             
-            // Verificar se o driver Dokan está instalado - usando método alternativo
+            // Verificar se o driver Dokan esta instalado - usando metodo alternativo
             DWORD version = DokanDriverVersion();
             if (version == 0) {
-                g_last_error = "Driver Dokan não está instalado ou não pôde ser acessado";
+                g_last_error = "Driver Dokan nao esta instalado ou nao pôde ser acessado";
                 log_message(g_last_error);
                 return false;
             }
@@ -404,7 +404,7 @@ public:
             ZeroMemory(&dokan_options, sizeof(DOKAN_OPTIONS));
             dokan_options.Version = DOKAN_VERSION;
             dokan_options.MountPoint = mount_point.c_str();
-            // Configurar opções para melhor visibilidade no Explorer
+            // Configurar opcões para melhor visibilidade no Explorer
             dokan_options.Options = DOKAN_OPTION_MOUNT_MANAGER | DOKAN_OPTION_CURRENT_SESSION;
             dokan_options.Timeout = 30000; // Aumentado para 30 segundos
             dokan_options.AllocationUnitSize = 512;
@@ -419,7 +419,7 @@ public:
             dokan_operations.GetFileInformation = GetFileInformation;
             dokan_operations.Cleanup = Cleanup;
             dokan_operations.CloseFile = CloseFile;
-            // Adicionar mais callbacks necessários para o Explorer
+            // Adicionar mais callbacks necessarios para o Explorer
             dokan_operations.GetVolumeInformation = GetVolumeInformation;
             dokan_operations.GetDiskFreeSpace = GetDiskFreeSpace;
             
@@ -441,12 +441,12 @@ public:
                         g_mount_success = true;
                     }
                 } catch (const std::exception& e) {
-                    g_last_error = "Exceção na thread de montagem: " + std::string(e.what());
+                    g_last_error = "Excecao na thread de montagem: " + std::string(e.what());
                     log_message(g_last_error);
                     is_mounted = false;
                     g_mount_success = false;
                 } catch (...) {
-                    g_last_error = "Exceção desconhecida na thread de montagem";
+                    g_last_error = "Excecao desconhecida na thread de montagem";
                     log_message(g_last_error);
                     is_mounted = false;
                     g_mount_success = false;
@@ -459,7 +459,7 @@ public:
             auto start_time = std::chrono::steady_clock::now();
             const auto timeout = std::chrono::seconds(10); // 10 segundos de timeout
             
-            // Aguardar até que a montagem seja concluída ou timeout
+            // Aguardar ate que a montagem seja concluida ou timeout
             while (g_mount_in_progress && 
                    std::chrono::steady_clock::now() - start_time < timeout) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -470,14 +470,14 @@ public:
                 }
             }
             
-            // Verificar resultado após timeout
+            // Verificar resultado apos timeout
             if (g_mount_in_progress) {
-                // Ainda em progresso após timeout
+                // Ainda em progresso apos timeout
                 g_last_error = "Timeout na montagem da unidade " + drive_letter;
                 log_message(g_last_error);
                 
-                // Não interromper a thread, apenas retornar falha
-                // A thread continuará tentando montar em segundo plano
+                // Nao interromper a thread, apenas retornar falha
+                // A thread continuara tentando montar em segundo plano
                 return false;
             }
             
@@ -492,11 +492,11 @@ public:
             log_message("Unidade " + drive_letter + " montada com sucesso");
             return true;
         } catch (const std::exception& e) {
-            g_last_error = "Exceção ao montar: " + std::string(e.what());
+            g_last_error = "Excecao ao montar: " + std::string(e.what());
             log_message(g_last_error);
             return false;
         } catch (...) {
-            g_last_error = "Exceção desconhecida ao montar";
+            g_last_error = "Excecao desconhecida ao montar";
             log_message(g_last_error);
             return false;
         }
@@ -505,7 +505,7 @@ public:
     bool unmount() {
         try {
             if (!is_mounted) {
-                log_message("Tentativa de desmontar unidade não montada");
+                log_message("Tentativa de desmontar unidade nao montada");
                 return false;
             }
             
@@ -517,13 +517,13 @@ public:
             auto start_time = std::chrono::steady_clock::now();
             const auto timeout = std::chrono::seconds(15); // 15 segundos de timeout
             
-            // Primeiro, tentar método normal
+            // Primeiro, tentar metodo normal
             DokanRemoveMountPoint(mount_point.c_str());
             
-            // Aguardar até que a thread termine ou timeout
+            // Aguardar ate que a thread termine ou timeout
             while (mount_thread.joinable() && 
                    std::chrono::steady_clock::now() - start_time < timeout) {
-                // Tentar join com timeout curto para não bloquear
+                // Tentar join com timeout curto para nao bloquear
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 
                 // Verificar se a thread terminou
@@ -533,11 +533,11 @@ public:
                 }
             }
             
-            // Se ainda não desmontou, tentar forçar
+            // Se ainda nao desmontou, tentar forcar
             if (!unmount_success) {
-                log_message("Timeout na desmontagem normal, tentando forçar...");
+                log_message("Timeout na desmontagem normal, tentando forcar...");
                 
-                // Tentar forçar a desmontagem usando DokanUnmount
+                // Tentar forcar a desmontagem usando DokanUnmount
                 DokanUnmount(mount_point[0]);
                 
                 // Aguardar mais um pouco
@@ -549,7 +549,7 @@ public:
                 }
             }
             
-            // Se a thread ainda estiver rodando, não podemos fazer join seguro
+            // Se a thread ainda estiver rodando, nao podemos fazer join seguro
             // mas podemos atualizar o estado
             is_mounted = false;
             
@@ -557,16 +557,16 @@ public:
                 log_message("Unidade desmontada com sucesso");
                 return true;
             } else {
-                g_last_error = "Não foi possível desmontar completamente a unidade";
+                g_last_error = "Nao foi possivel desmontar completamente a unidade";
                 log_message(g_last_error);
                 return false;
             }
         } catch (const std::exception& e) {
-            g_last_error = "Exceção ao desmontar: " + std::string(e.what());
+            g_last_error = "Excecao ao desmontar: " + std::string(e.what());
             log_message(g_last_error);
             return false;
         } catch (...) {
-            g_last_error = "Exceção desconhecida ao desmontar";
+            g_last_error = "Excecao desconhecida ao desmontar";
             log_message(g_last_error);
             return false;
         }
@@ -599,7 +599,7 @@ public:
     }
 };
 
-// Função auxiliar para obter a instância DokanyVFS a partir do DokanFileInfo
+// Funcao auxiliar para obter a instância DokanyVFS a partir do DokanFileInfo
 static DokanyVFS* GetVFSInstance(PDOKAN_FILE_INFO DokanFileInfo) {
     if (!DokanFileInfo || !DokanFileInfo->DokanOptions || !DokanFileInfo->DokanOptions->MountPoint) {
         return nullptr;
@@ -616,7 +616,7 @@ static DokanyVFS* GetVFSInstance(PDOKAN_FILE_INFO DokanFileInfo) {
     
     return it->second.get();
 }
-// Função auxiliar para converter caminho de wchar_t* para string
+// Funcao auxiliar para converter caminho de wchar_t* para string
 static std::string ConvertFileName(LPCWSTR FileName) {
     if (!FileName) return "";
     
@@ -625,9 +625,9 @@ static std::string ConvertFileName(LPCWSTR FileName) {
 
 namespace {
 
-    // Funções globais para gerenciar montagens
+    // Funcões globais para gerenciar montagens
     bool mount_drive(const std::string& drive_letter, const std::string& backend_path) {
-        // Verificar se já existe uma montagem para esta letra
+        // Verificar se ja existe uma montagem para esta letra
         if (g_mounts.find(drive_letter) != g_mounts.end()) {
             return false;
         }
@@ -657,7 +657,7 @@ namespace {
         return success;
     }
 
-    // Função para configurar callbacks
+    // Funcao para configurar callbacks
     void set_callbacks(
         const std::string& drive_letter,
         std::function<py::bytes(const std::string&)> read_cb,
@@ -668,7 +668,7 @@ namespace {
         
         auto it = g_mounts.find(drive_letter);
         if (it == g_mounts.end()) {
-            throw std::runtime_error("Unidade não encontrada: " + drive_letter);
+            throw std::runtime_error("Unidade nao encontrada: " + drive_letter);
         }
         
         auto& vfs = it->second;
@@ -692,14 +692,14 @@ PYBIND11_MODULE(winfuse, m) {
         .def("set_exists_callback", &DokanyVFS::set_exists_callback)
         .def("set_size_callback", &DokanyVFS::set_size_callback);
     
-    // Adicionar funções globais
+    // Adicionar funcões globais
     m.def("mount_drive", &mount_drive, "Monta uma unidade virtual");
     m.def("unmount_drive", &unmount_drive, "Desmonta uma unidade virtual");
     m.def("set_callbacks", &set_callbacks, "Configura callbacks para uma unidade montada");
     
-    // Funções para diagnóstico e status - movidas para dentro do módulo
-    m.def("get_last_error", []() { return g_last_error; }, "Retorna o último erro ocorrido");
-    m.def("is_mounting_in_progress", []() { return g_mount_in_progress.load(); }, "Verifica se uma montagem está em progresso");
+    // Funcões para diagnostico e status - movidas para dentro do modulo
+    m.def("get_last_error", []() { return g_last_error; }, "Retorna o ultimo erro ocorrido");
+    m.def("is_mounting_in_progress", []() { return g_mount_in_progress.load(); }, "Verifica se uma montagem esta em progresso");
     m.def("check_admin_privileges", []() {
         BOOL is_admin = FALSE;
         PSID admin_group = NULL;
@@ -711,7 +711,7 @@ PYBIND11_MODULE(winfuse, m) {
             return false;
         }
         
-        // Verificar se o processo atual está executando como administrador
+        // Verificar se o processo atual esta executando como administrador
         if (!CheckTokenMembership(NULL, admin_group, &is_admin)) {
             is_admin = FALSE;
         }
@@ -720,10 +720,10 @@ PYBIND11_MODULE(winfuse, m) {
         FreeSid(admin_group);
         
         return is_admin ? true : false;
-    }, "Verifica se o programa está sendo executado com privilégios de administrador");
+    }, "Verifica se o programa esta sendo executado com privilegios de administrador");
 }
 
-// Callback para informações de volume
+// Callback para informacões de volume
 static NTSTATUS DOKAN_CALLBACK GetVolumeInformation(
     LPWSTR VolumeNameBuffer,
     DWORD VolumeNameSize,
@@ -737,10 +737,10 @@ static NTSTATUS DOKAN_CALLBACK GetVolumeInformation(
     // Configurar nome do volume
     wcscpy_s(VolumeNameBuffer, VolumeNameSize, L"QuarkDrive");
     
-    // Configurar número de série
+    // Configurar numero de serie
     *VolumeSerialNumber = 0x19831116;
     
-    // Configurar comprimento máximo de componente
+    // Configurar comprimento maximo de componente
     *MaximumComponentLength = 255;
     
     // Configurar flags do sistema de arquivos
@@ -754,17 +754,17 @@ static NTSTATUS DOKAN_CALLBACK GetVolumeInformation(
     return STATUS_SUCCESS;
 }
 
-// Callback para espaço livre em disco
+// Callback para espaco livre em disco
 static NTSTATUS DOKAN_CALLBACK GetDiskFreeSpace(
     PULONGLONG FreeBytesAvailable,
     PULONGLONG TotalNumberOfBytes,
     PULONGLONG TotalNumberOfFreeBytes,
     PDOKAN_FILE_INFO DokanFileInfo) {
     
-    // Configurar espaço total (10 GB)
+    // Configurar espaco total (10 GB)
     *TotalNumberOfBytes = 10ULL * 1024 * 1024 * 1024;
     
-    // Configurar espaço livre (5 GB)
+    // Configurar espaco livre (5 GB)
     *FreeBytesAvailable = 5ULL * 1024 * 1024 * 1024;
     *TotalNumberOfFreeBytes = 5ULL * 1024 * 1024 * 1024;
     

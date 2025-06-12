@@ -11,7 +11,7 @@ class BuildExt(build_ext):
         opts = ['/EHsc', '/std:c++17'] if ct == 'msvc' else ['-std=c++17']
         
         if ct == 'msvc':
-            # /MT deve ir para extra_compile_args, não extra_link_args
+            # /MT deve ir para extra_compile_args, nao extra_link_args
             opts.extend(['/MT'])
             link_flags = []
         else:
@@ -23,7 +23,7 @@ class BuildExt(build_ext):
 
         build_ext.build_extensions(self)
 
-# Diretórios de include e bibliotecas (locais)
+# Diretorios de include e bibliotecas (locais)
 include_dirs = [
     get_include(),
     "./include"  # Headers copiados pelo copy_all_dlls.py
@@ -33,9 +33,9 @@ library_dirs = [
     "./lib"  # Bibliotecas copiadas pelo copy_all_dlls.py
 ]
 
-# Configurações específicas para Windows
+# Configuracões especificas para Windows
 if platform.system() == "Windows":
-    # Bibliotecas para compressão
+    # Bibliotecas para compressao
     compression_libs = ["zstd", "bz2", "lzma", "lz4", "brotlicommon", "brotlidec", "brotlienc"]
     
     # Bibliotecas para hash (incluindo OpenSSL)
@@ -44,10 +44,10 @@ if platform.system() == "Windows":
     # Bibliotecas para VFS (incluindo Dokan) - nomes corretos das bibliotecas
     vfs_libs = ["kernel32", "user32", "shlwapi", "advapi32", "dokan2", "dokanfuse2"]
     
-    # Macros para ZSTD estático
+    # Macros para ZSTD estatico
     define_macros = [('ZSTD_STATIC_LINKING_ONLY', None)]
 else:
-    # Configuração para Linux (caso seja usado no futuro)
+    # Configuracao para Linux (caso seja usado no futuro)
     compression_libs = ["zstd", "bz2", "lzma", "lz4", "brotlicommon", "brotlidec", "brotlienc"]
     hash_libs = ["xxhash", "ssl", "crypto"]
     vfs_libs = []
@@ -74,11 +74,11 @@ extensions = [
     )
 ]
 
-# Adicionar módulo VFS apenas no Windows
+# Adicionar modulo VFS apenas no Windows
 if platform.system() == "Windows":
     extensions.append(
         Extension(
-            "winfuse",  # Nome correto do módulo
+            "winfuse",  # Nome correto do modulo
             ["extensions/winfuse.cpp"],
             include_dirs=include_dirs,
             libraries=vfs_libs,

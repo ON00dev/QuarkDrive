@@ -24,7 +24,7 @@ class StorageManager:
     def store_file(self, file_path, use_fast_hash=True):
         print(f"Storing file: {file_path}")
 
-        # Usar hash rápido para verificação inicial de duplicatas
+        # Usar hash rapido para verificacao inicial de duplicatas
         if use_fast_hash:
             from core.deduplication import fast_duplicate_check
             hash_value = fast_duplicate_check(file_path)
@@ -92,12 +92,12 @@ class StorageManager:
     def close(self):
         self.db.close()
 
-    # Adicionar estes métodos à classe StorageManager:
+    # Adicionar estes metodos à classe StorageManager:
     
     def update_statistics(self):
-        """Atualizar todas as estatísticas"""
+        """Atualizar todas as estatisticas"""
         try:
-            # Estatísticas do banco de dados
+            # Estatisticas do banco de dados
             total_files = self.db.get_total_files()
             total_blobs = self.db.get_total_blobs()
             total_original = self.db.get_total_original_size()
@@ -107,7 +107,7 @@ class StorageManager:
             self.stats.update_file_stats(total_files, total_blobs)
             self.stats.update_size_stats(total_original, total_compressed)
             
-            # Estatísticas do cache
+            # Estatisticas do cache
             cache_stats = self.cache.get_cache_stats()
             self.stats.update_cache_stats(
                 cache_stats['cache_hits'],
@@ -120,13 +120,13 @@ class StorageManager:
             self.stats.update_cache_usage(cache_stats['ram_usage_percent'])
             
         except Exception as e:
-            print(f"Erro ao atualizar estatísticas: {e}")
+            print(f"Erro ao atualizar estatisticas: {e}")
     
     def get_detailed_stats(self):
-        """Obter estatísticas detalhadas do sistema"""
+        """Obter estatisticas detalhadas do sistema"""
         self.update_statistics()
         
-        # Combinar estatísticas de diferentes fontes
+        # Combinar estatisticas de diferentes fontes
         stats = self.stats.get_current_stats()
         cache_stats = self.cache.get_cache_stats()
         compression_stats = self.db.get_compression_stats()
@@ -149,14 +149,14 @@ class StorageManager:
         }
     
     def start_stats_monitoring(self, interval=5):
-        """Iniciar monitoramento automático de estatísticas"""
+        """Iniciar monitoramento automatico de estatisticas"""
         def monitor_loop():
             while True:
                 try:
                     self.update_statistics()
                     time.sleep(interval)
                 except Exception as e:
-                    print(f"Erro no monitoramento de estatísticas: {e}")
+                    print(f"Erro no monitoramento de estatisticas: {e}")
                     time.sleep(interval)
         
         import threading

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Testes unitários para o módulo de deduplicação
+Testes unitarios para o modulo de deduplicacao
 """
 
 import unittest
@@ -11,17 +11,17 @@ import hashlib
 from pathlib import Path
 import sys
 
-# Adicionar o diretório raiz ao path
+# Adicionar o diretorio raiz ao path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from core.deduplication import calculate_file_hash, calculate_data_hash
 
 class TestDeduplication(unittest.TestCase):
-    """Testes para funcionalidades de deduplicação"""
+    """Testes para funcionalidades de deduplicacao"""
     
     def setUp(self):
-        """Configuração inicial para cada teste"""
-        self.test_data = b"Este é um arquivo de teste para deduplicação"
+        """Configuracao inicial para cada teste"""
+        self.test_data = b"Este e um arquivo de teste para deduplicacao"
         self.temp_dir = tempfile.mkdtemp()
         self.test_file = os.path.join(self.temp_dir, "test_file.txt")
         
@@ -30,27 +30,27 @@ class TestDeduplication(unittest.TestCase):
             f.write(self.test_data)
     
     def tearDown(self):
-        """Limpeza após cada teste"""
+        """Limpeza apos cada teste"""
         if os.path.exists(self.test_file):
             os.remove(self.test_file)
         os.rmdir(self.temp_dir)
     
     def test_calculate_file_hash(self):
-        """Testar cálculo de hash de arquivo"""
+        """Testar calculo de hash de arquivo"""
         # Calcular hash esperado
         expected_hash = hashlib.sha256(self.test_data).hexdigest()
         
-        # Calcular hash usando a função
+        # Calcular hash usando a funcao
         calculated_hash = calculate_file_hash(self.test_file)
         
         self.assertEqual(calculated_hash, expected_hash)
     
     def test_calculate_data_hash(self):
-        """Testar cálculo de hash de dados"""
+        """Testar calculo de hash de dados"""
         # Calcular hash esperado
         expected_hash = hashlib.sha256(self.test_data).hexdigest()
         
-        # Calcular hash usando a função
+        # Calcular hash usando a funcao
         calculated_hash = calculate_data_hash(self.test_data)
         
         self.assertEqual(calculated_hash, expected_hash)
@@ -98,8 +98,8 @@ class TestDeduplication(unittest.TestCase):
         os.remove(large_file)
     
     def test_duplicate_detection(self):
-        """Testar detecção de arquivos duplicados"""
-        # Criar segundo arquivo com mesmo conteúdo
+        """Testar deteccao de arquivos duplicados"""
+        # Criar segundo arquivo com mesmo conteudo
         duplicate_file = os.path.join(self.temp_dir, "duplicate.txt")
         with open(duplicate_file, 'wb') as f:
             f.write(self.test_data)
@@ -116,7 +116,7 @@ class TestDeduplication(unittest.TestCase):
     
     def test_different_files(self):
         """Testar que arquivos diferentes têm hashes diferentes"""
-        different_data = b"Este é um arquivo diferente"
+        different_data = b"Este e um arquivo diferente"
         different_file = os.path.join(self.temp_dir, "different.txt")
         
         # Criar arquivo diferente

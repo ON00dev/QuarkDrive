@@ -1,7 +1,7 @@
 import zstandard as zstd
 import threading
 
-# Variáveis globais para rastrear estatísticas de compressão
+# Variaveis globais para rastrear estatisticas de compressao
 _compression_stats = {
     'total_original_size': 0,
     'total_compressed_size': 0,
@@ -10,8 +10,8 @@ _compression_stats = {
 
 def calcular_taxa():
     """
-    Calcula a taxa de compressão baseada nos dados processados.
-    Retorna a porcentagem de redução de tamanho.
+    Calcula a taxa de compressao baseada nos dados processados.
+    Retorna a porcentagem de reducao de tamanho.
     """
     with _compression_stats['lock']:
         if _compression_stats['total_original_size'] == 0:
@@ -22,7 +22,7 @@ def calcular_taxa():
 
 def _update_compression_stats(original_size: int, compressed_size: int):
     """
-    Atualiza as estatísticas globais de compressão.
+    Atualiza as estatisticas globais de compressao.
     """
     with _compression_stats['lock']:
         _compression_stats['total_original_size'] += original_size
@@ -36,20 +36,20 @@ class Compressor:
 
     def compress(self, data: bytes) -> bytes:
         compressed = self.cctx.compress(data)
-        # Atualiza estatísticas de compressão
+        # Atualiza estatisticas de compressao
         _update_compression_stats(len(data), len(compressed))
         return compressed
 
     def compress_data(self, data: bytes, stats_manager=None) -> bytes:
         """
-        Comprime dados e opcionalmente atualiza estatísticas via stats_manager
+        Comprime dados e opcionalmente atualiza estatisticas via stats_manager
         """
         compressed = self.cctx.compress(data)
         
-        # Atualiza estatísticas locais
+        # Atualiza estatisticas locais
         _update_compression_stats(len(data), len(compressed))
         
-        # Atualiza estatísticas via manager se fornecido
+        # Atualiza estatisticas via manager se fornecido
         if stats_manager:
             compression_ratio = (1 - len(compressed) / len(data)) * 100
             stats_manager.update_compression_ratio(compression_ratio)
@@ -71,14 +71,14 @@ def compress_file(input_path: str, output_path: str, level=5, stats_manager=None
                 compressor_writer.write(chunk)
                 total_original += original_size
                 
-                # Estima o tamanho comprimido (aproximação)
+                # Estima o tamanho comprimido (aproximacao)
                 estimated_compressed = int(original_size * 0.3)
                 total_compressed += estimated_compressed
     
-    # Atualiza estatísticas globais
+    # Atualiza estatisticas globais
     _update_compression_stats(total_original, total_compressed)
     
-    # Atualiza estatísticas via manager se fornecido
+    # Atualiza estatisticas via manager se fornecido
     if stats_manager:
         compression_ratio = calcular_taxa()
         stats_manager.update_compression_ratio(compression_ratio)
