@@ -172,12 +172,12 @@ class QuarkDriveGUI:
                         with dpg.group(horizontal=True):
                             if os.name == 'nt':  # Windows
                                 # Combo para letras de drive
-                                available_drives = [f"{chr(i)}:" for i in range(ord('Q'), ord('Z')+1) 
+                                available_drives = [f"{chr(i)}:" for i in range(ord('M'), ord('Z')+1) 
                                               if not os.path.exists(f"{chr(i)}:\\")]
                                 
-                                dpg.add_combo(available_drives if available_drives else ["Q:"], 
+                                dpg.add_combo(available_drives if available_drives else ["M:"], 
                                              tag="mount_point_combo", 
-                                             default_value=available_drives[0] if available_drives else "Q:", 
+                                             default_value=available_drives[0] if available_drives else "M:", 
                                              width=100)
                                 with dpg.group(horizontal=True):
                                     dpg.add_image(self.icons['pasta'], width=16, height=16)

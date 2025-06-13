@@ -17,8 +17,11 @@ def import_winfuse():
     if winfuse is None and platform.system() == 'Windows':
         try:
             # Configurar caminhos para garantir que o modulo seja encontrado
-            lib_path = str(Path(__file__).parent.parent / "lib")
-            site_packages_path = str(Path(__file__).parent.parent / "lib" / "site-packages")
+            lib_path = str(Path(__file__).parent.parent / "bin" / "lib")
+            site_packages_path = str(Path(__file__).parent.parent / "bin" / "lib" / "site-packages")
+            
+            print(f"Tentando importar winfuse com lib_path={lib_path}")
+            print(f"site_packages_path={site_packages_path}")
             
             # Adicionar ao sys.path se ainda nao estiver la
             if site_packages_path not in sys.path:
@@ -27,19 +30,26 @@ def import_winfuse():
             # Adicionar ao PATH para DLLs
             try:
                 os.add_dll_directory(lib_path)
+                print(f"DLL directory adicionado: {lib_path}")
             except AttributeError:
                 # Para versões mais antigas do Python sem add_dll_directory
                 os.environ['PATH'] = lib_path + os.pathsep + os.environ.get('PATH', '')
+                print(f"PATH atualizado: {os.environ['PATH']}")
                 
             # Agora tenta importar o modulo
+            print("Tentando importar winfuse...")
             import winfuse as winfuse_module
+            print("winfuse importado com sucesso!")
             winfuse = winfuse_module
             return winfuse_module
         except ImportError as e:
             print(f"ERRO: winfuse nao compilado! Detalhes: {e}")
+            print(f"sys.path = {sys.path}")
             return None
         except Exception as e:
             print(f"ERRO: Falha ao inicializar winfuse! Detalhes: {e}")
+            import traceback
+            traceback.print_exc()
             return None
     return winfuse
 

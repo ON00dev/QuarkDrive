@@ -7,8 +7,8 @@ set "SCRIPT_DIR=%~dp0"
 set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
 :: Caminhos que precisam ser adicionados ao PATH
-set "DRIVER_PATH=%SCRIPT_DIR%\driver"
-set "LIB_PATH=%SCRIPT_DIR%\lib"
+set "DRIVER_PATH=%SCRIPT_DIR%\bin\driver"
+set "LIB_PATH=%SCRIPT_DIR%\bin\lib"
 
 :: Verificar se os caminhos ja existem no PATH
 echo Verificando PATH do sistema...

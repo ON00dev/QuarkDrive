@@ -51,9 +51,9 @@ if platform.system() == "Windows":
     except Exception as e:
         print(f"Erro ao executar dokan_to_path.bat: {e}")
     
-    lib_path = str(Path(__file__).parent / "lib")
+    lib_path = str(Path(__file__).parent / "bin" / "lib")
     # Adicionar site-packages ao sys.path para encontrar os modulos .pyd
-    site_packages_path = str(Path(__file__).parent / "lib" / "site-packages")
+    site_packages_path = str(Path(__file__).parent / "bin" / "lib" / "site-packages")
     sys.path.insert(0, site_packages_path)
     
     os.add_dll_directory(lib_path)
