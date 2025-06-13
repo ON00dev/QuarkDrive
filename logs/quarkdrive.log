@@ -14,3 +14,11 @@
 2025-06-12 21:00:28,560 - QuarkDrive - INFO - Montando sistema de arquivos Windows em M:
 2025-06-12 21:00:28,561 - QuarkDrive - INFO - Tentando importar o modulo winfuse...
 2025-06-12 21:00:28,561 - QuarkDrive - INFO - Iniciando montagem da unidade M:
+2025-06-12 22:27:23,404 - root - INFO - Iniciando QuarkDrive
+2025-06-12 22:27:23,839 - root - INFO - Solicitando privilegios de administrador...
+2025-06-12 22:27:27,009 - root - INFO - Iniciando QuarkDrive
+2025-06-12 22:27:27,009 - root - INFO - Iniciando interface grafica
+2025-06-12 22:27:53,332 - QuarkDrive - INFO - Criando instância do sistema de arquivos
+2025-06-12 22:27:53,332 - QuarkDrive - INFO - Montando sistema de arquivos Windows em M:
+2025-06-12 22:27:53,358 - QuarkDrive - INFO - Tentando importar o modulo winfuse...
+2025-06-12 22:27:53,358 - QuarkDrive - INFO - Iniciando montagem da unidade M:

@@ -26,11 +26,11 @@ class BuildExt(build_ext):
 # Diretorios de include e bibliotecas (locais)
 include_dirs = [
     get_include(),
-    "./include"  # Headers copiados pelo copy_all_dlls.py
+    "./bin/include"  # Headers copiados pelo copy_all_dlls.py
 ]
 
 library_dirs = [
-    "./lib"  # Bibliotecas copiadas pelo copy_all_dlls.py
+    "./bin/lib"  # Bibliotecas copiadas pelo copy_all_dlls.py
 ]
 
 # Configuracões especificas para Windows

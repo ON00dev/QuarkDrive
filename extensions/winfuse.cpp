@@ -457,7 +457,7 @@ public:
             
             // Implementar timeout para a montagem
             auto start_time = std::chrono::steady_clock::now();
-            const auto timeout = std::chrono::seconds(10); // 10 segundos de timeout
+            const auto timeout = std::chrono::seconds(30); // 30 segundos de timeout (aumentado de 10)
             
             // Aguardar ate que a montagem seja concluida ou timeout
             while (g_mount_in_progress && 

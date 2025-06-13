@@ -31,3 +31,5 @@ Falha na montagem da unidade X::
 2025-06-12 18:35:04 - Thread de montagem iniciada para unidade Q:
 2025-06-12 19:07:54 - 2025-06-12 19:07:54 - Thread de montagem iniciada para unidade T:Falha na montagem da unidade T:: 
 
+2025-06-12 22:27:53 - Falha na montagem da unidade M:: 
+2025-06-12 22:27:53 - Thread de montagem iniciada para unidade M:

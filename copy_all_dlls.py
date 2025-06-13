@@ -14,9 +14,12 @@ DOKAN_LIB_DIR = os.path.join(DOKAN_SDK_PATH, 'lib')
 DOKAN_DRIVER_DIR = os.path.join(DOKAN_SDK_PATH, 'driver')
 
 # Diretorios destino
-dest_lib_dir = Path("lib")
-dest_include_dir = Path("include")
-dest_driver_dir = Path("driver")
+dest_lib_dir = Path("bin/lib")
+dest_include_dir = Path("bin/include")
+dest_driver_dir = Path("bin/driver")
+
+# Novo diretório para DLLs (usando o mesmo diretório lib)
+dest_dll_dir = dest_lib_dir
 
 # Verificar se vcpkg existe
 if not os.path.exists(VCPKG_ROOT):
@@ -35,9 +38,9 @@ if not os.path.exists(DOKAN_SDK_PATH):
     exit(1)
 
 # Criar diretorios destino se nao existirem
-dest_lib_dir.mkdir(exist_ok=True)
-dest_include_dir.mkdir(exist_ok=True)
-dest_driver_dir.mkdir(exist_ok=True)
+dest_lib_dir.mkdir(exist_ok=True, parents=True)
+dest_include_dir.mkdir(exist_ok=True, parents=True)
+dest_driver_dir.mkdir(exist_ok=True, parents=True)
 
 print("=== Copiando dependências do vcpkg e Dokan SDK ===")
 print(f"vcpkg installed: {VCPKG_INSTALLED_DIR}")
@@ -99,6 +102,31 @@ def copy_dokan_files():
         print(f"   ⚠ Pasta include do Dokan nao encontrada: {DOKAN_INCLUDE_DIR}")
     
     return copied_libs, copied_headers
+
+def copy_dokan_dll_files():
+    """Copia arquivos DLL do Dokan SDK"""
+    copied_dlls = 0
+    
+    print(f"📦 Copiando DLLs do Dokan SDK de: {DOKAN_SDK_PATH}")
+    
+    # Procurar por DLLs em todos os diretórios do Dokan SDK
+    for root, dirs, files in os.walk(DOKAN_SDK_PATH):
+        for file in files:
+            if file.lower().endswith('.dll'):
+                src_file = os.path.join(root, file)
+                dest_file = dest_dll_dir / file
+                
+                try:
+                    shutil.copy2(src_file, dest_file)
+                    print(f"   ✓ DLL: {file}")
+                    copied_dlls += 1
+                except Exception as e:
+                    print(f"   ✗ Erro ao copiar DLL {file}: {e}")
+    
+    if copied_dlls == 0:
+        print("   ⚠ Nenhuma DLL encontrada no Dokan SDK")
+    
+    return copied_dlls
 
 def copy_dokan_driver_files():
     """Copia arquivos do driver do Dokan"""
@@ -219,6 +247,10 @@ total_libs_vcpkg, total_headers_vcpkg = copy_vcpkg_files()
 print(f"\n{'='*50}")
 total_libs_dokan, total_headers_dokan = copy_dokan_files()
 
+# Copiar DLLs do Dokan SDK
+print(f"\n{'='*50}")
+total_dlls_dokan = copy_dokan_dll_files()
+
 # Copiar arquivos do driver do Dokan
 print(f"\n{'='*50}")
 total_driver_files = copy_dokan_driver_files()
@@ -231,11 +263,13 @@ print(f"  - Dokan: {total_libs_dokan}")
 print(f"Total de arquivos de header copiados: {total_headers_vcpkg + total_headers_dokan}")
 print(f"  - vcpkg: {total_headers_vcpkg}")
 print(f"  - Dokan: {total_headers_dokan}")
+print(f"Total de arquivos DLL copiados: {total_dlls_dokan}")
 print(f"Total de arquivos de driver copiados: {total_driver_files}")
 print(f"\nDependências preparadas em:")
 print(f"  📁 Bibliotecas: {dest_lib_dir.absolute()}")
 print(f"  📁 Headers: {dest_include_dir.absolute()}")
 print(f"  📁 Driver: {dest_driver_dir.absolute()}")
+print(f"  📁 DLLs: {dest_dll_dir.absolute()}")
 
 if (total_libs_vcpkg + total_libs_dokan) > 0 and (total_headers_vcpkg + total_headers_dokan) > 0 and total_driver_files > 0:
     print(f"\n🎉 Sucesso! Agora execute:")
